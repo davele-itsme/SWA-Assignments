@@ -1,4 +1,5 @@
 function EventClass(time, place) {
+  //Renamed to EventClass so that it is not confused with Event
   const state = { time, place };
 
   state.getTime = () => state.time;
@@ -325,13 +326,3 @@ function DateInterval(from, to) {
 
   return state;
 }
-
-const eventclasstype = EventClass(20, "Bucharest");
-const datatypetypes = DataType("c", 20);
-const weatherDatatest = WeatherData(20, "Bucharest", "c", 20, 22);
-console.log(weatherDatatest.getType());
-
-const temperaturetest = Temperature(20, "Bucharest", "US", "F", 20);
-temperaturetest.convertToC()
-console.log(temperaturetest.getValue());
-console.log(temperaturetest);

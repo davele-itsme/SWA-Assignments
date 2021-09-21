@@ -48,7 +48,7 @@ function Precipitation(time, place, type, unit, value, precipitationType) {
   this.precipitationType = precipitationType;
 
   this.getPrecipitationType = () => this.precipitationType;
-  this.this.convertToInches = () => {
+  this.convertToInches = () => {
     if (this.unit == "mm") {
       this.unit = "inches";
       this.value = this.value / 25.4;
@@ -307,20 +307,3 @@ function DateInterval(from, to) {
     return d > from && d < to;
   };
 }
-
-let wd = new WeatherData(1, 2, 3, 4, 5);
-console.log(wd.getTime());
-console.log(wd.getValue());
-console.log(wd.getType());
-let t = new Temperature(1, 2, 3, 20, 5);
-console.log(t);
-
-let p = new Precipitation(1, 2, 3, 4, 5);
-
-const d = new Date(2018, 11, 24, 10, 33, 30, 0);
-const d2 = new Date(2016, 11, 24, 10, 33, 30, 0);
-const d3 = new Date(2019, 11, 24, 10, 33, 30, 0);
-let di = new DateInterval(d, Date.now());
-console.log(di.contains(d2));
-console.log(di.contains(d3));
-console.log(wd);
