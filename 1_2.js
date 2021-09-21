@@ -2,6 +2,7 @@ function EventClass(time, place) {
   //Renamed to EventClass so that it is not confused with Event
   this.time = time;
   this.place = place;
+
   this.getTime = () => this.time;
   this.getPlace = () => this.place;
 }
@@ -9,6 +10,7 @@ function EventClass(time, place) {
 function DataType(type, unit) {
   this.type = type;
   this.unit = unit;
+
   this.getType = () => this.type;
   this.getUnit = () => this.unit;
 }
@@ -17,6 +19,7 @@ function WeatherData(time, place, type, unit, value) {
   EventClass.call(this, time, place);
   DataType.call(this, type, unit);
   this.value = value;
+
   this.getValue = () => this.value;
 }
 Object.setPrototypeOf(WeatherData.prototype, EventClass.prototype);
@@ -24,6 +27,7 @@ Object.setPrototypeOf(WeatherData.prototype, DataType.prototype);
 
 function Temperature(time, place, type, unit, value) {
   WeatherData.call(this, time, place, type, unit, value);
+
   this.convertToF = () => {
     if (this.unit == "C") {
       this.unit = "F";
@@ -39,9 +43,12 @@ function Temperature(time, place, type, unit, value) {
 }
 Object.setPrototypeOf(Temperature.prototype, WeatherData.prototype);
 
-function Precipitation(time, place, type, unit, value) {
+function Precipitation(time, place, type, unit, value, precipitationType) {
   WeatherData.call(this, time, place, type, unit, value);
-  this.convertToInches = () => {
+  this.precipitationType = precipitationType;
+
+  this.getPrecipitationType = () => this.precipitationType;
+  this.this.convertToInches = () => {
     if (this.unit == "mm") {
       this.unit = "inches";
       this.value = this.value / 25.4;
@@ -59,6 +66,7 @@ Object.setPrototypeOf(Precipitation.prototype, WeatherData.prototype);
 function Wind(time, place, type, unit, value, direction) {
   WeatherData.call(this, time, place, type, unit, value);
   this.direction = direction;
+
   this.getDirection = () => this.direction;
   this.convertToMPH = () => {
     if (this.unit == "ms") {
@@ -75,7 +83,92 @@ function Wind(time, place, type, unit, value, direction) {
 }
 Object.setPrototypeOf(Wind.prototype, WeatherData.prototype);
 
-function WeatherPrediction() {}
+function WeatherPrediction(time, place, type, unit, max, min) {
+  EventClass.call(this, time, place);
+  DataType.call(this, type, unit);
+  this.max = max;
+  this.min = min;
+
+  this.matches = (data) => {
+    return (
+      data.time == this.time &&
+      data.place == this.place &&
+      data.type == this.type &&
+      data.unit == this.unit &&
+      data.value < this.max &&
+      data.value > this.min
+    );
+  };
+  this.getMax = () => this.max;
+  this.getMin = () => this.min;
+}
+Object.setPrototypeOf(WeatherPrediction.prototype, EventClass.prototype);
+Object.setPrototypeOf(WeatherPrediction.prototype, DataType.prototype);
+
+function TemperaturePrediction(time, place, type, unit, value) {
+  WeatherPrediction.call(this, time, place, type, unit, value);
+  this.convertToF = () => {
+    if (this.unit == "C") {
+      this.unit = "F";
+      this.value = this.value * (9 / 5) + 32;
+    }
+  };
+  this.convertToC = () => {
+    if (this.unit == "F") {
+      this.unit = "C";
+      this.value = (5 / 9) * (this.value - 32);
+    }
+  };
+}
+Object.setPrototypeOf(
+  TemperaturePrediction.prototype,
+  WeatherPrediction.prototype
+);
+
+function PrecipitationPrediction(time, place, type, unit, expectedTypes) {
+  WeatherPrediction.call(this, time, place, type, unit);
+  this.expectedTypes = expectedTypes;
+
+  this.getExpectedTypes = () => this.expectedTypes;
+  this.matches = (data) => {};
+  this.convertToInches = () => {
+    if (this.unit == "mm") {
+      this.unit = "inches";
+      this.value = this.value / 25.4;
+    }
+  };
+  this.convertToMM = () => {
+    if (this.unit == "inches") {
+      this.unit = "mm";
+      this.value = this.value * 25.4;
+    }
+  };
+}
+Object.setPrototypeOf(
+  PrecipitationPrediction.prototype,
+  WeatherPrediction.prototype
+);
+
+function WindPrediction(time, place, type, unit, value, expectedDirections) {
+  WeatherPrediction.call(this, time, place, type, unit, value);
+  this.expectedDirections = expectedDirections;
+
+  this.getExpectedDirections = () => this.expectedDirections;
+  this.matches = (data) => {};
+  this.convertToMPH = () => {
+    if (this.unit == "ms") {
+      this.unit = "mph";
+      this.value = this.value * 2.237;
+    }
+  };
+  this.convertToMS = () => {
+    if (this.unit == "mph") {
+      this.unit = "ms";
+      this.value = this.value / 2.237;
+    }
+  };
+}
+Object.setPrototypeOf(WindPrediction.prototype, WeatherPrediction.prototype);
 
 function WeatherForecast(data) {
   this.data = data;
@@ -230,3 +323,4 @@ const d3 = new Date(2019, 11, 24, 10, 33, 30, 0);
 let di = new DateInterval(d, Date.now());
 console.log(di.contains(d2));
 console.log(di.contains(d3));
+console.log(wd);
