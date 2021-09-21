@@ -15,37 +15,32 @@ function DataType(type, unit) {
 }
 
 function WeatherData(time, place, type, unit, value) {
-  const state = { value };
-  let eventclass = EventClass(time, place);
-  let dataType = DataType(type, unit);
+  const state = { ...EventClass(time, place), ...DataType(type, unit), value };
 
   state.getValue = () => state.value;
-  return { ...eventclass, ...dataType, ...state };
+  return state;
 }
 
 function Temperature(time, place, type, unit, value) {
-  let weatherdata = WeatherData(time, place, type, unit, value);
+  const state = { ...WeatherData(time, place, type, unit, value) }
 
-  function convertToF() {
-    if (weatherdata.type == "C") {
-      weatherdata.type == "F";
-      weatherdata.value = weatherdata.value * (9 / 5) + 32;
-      return weatherdata.value;
+  state.convertToF = () => {
+    if (state.type == "C") {
+      state.type == "F";
+      state.value = state.value * (9 / 5) + 32;
     }
   }
-  function convertToC() {
-    if (weatherdata.type == "F") {
-      weatherdata.type == "C";
-      weatherdata.value = (weatherdata.value - 32) * (5 / 9);
-      return weatherdata.value;
+  state.convertToC = () => {
+    if (state.type == "F") {
+      state.type == "C";
+      state.value = (state.value - 32) * (5 / 9);
     }
   }
-  return { ...weatherdata, convertToC, convertToF };
+  return state;
 }
 
 function Precipitation(time, place, type, unit, value, precipitationType) {
-  const state = { precipitationType };
-  let weatherData = WeatherData(time, place, type, unit, value);
+  const state = { ...WeatherData(time, place, type, unit, value), precipitationType };
 
   state.getPrecipitationType = () => state.precipitationType;
   state.convertToInches = () => {
@@ -62,44 +57,41 @@ function Precipitation(time, place, type, unit, value, precipitationType) {
       return weatherData.value;
     }
   };
-  return { ...weatherData, ...state };
+  return state;
 }
 
 function Wind(time, place, type, unit, value, direction) {
-  const state = { direction };
-  let weatherdata = WeatherData(time, place, type, unit, value);
+  const state = { ...WeatherData(time, place, type, unit, value), direction };
 
   state.getDirection = () => state.direction;
   state.convertToMph = () => {
-    if ((weatherdata.unit = "ms")) {
-      weatherdata.unit = "mph";
-      weatherdata.value = weatherdata.value * 2.237;
-      return weatherdata.value;
+    if ((state.unit = "ms")) {
+      state.unit = "mph";
+      state.value = state.value * 2.237;
+      return state.value;
     }
   };
 
   state.convertToMs = () => {
-    if ((weatherdata.unit = "mph")) {
-      weatherdata.unit = "ms";
-      weatherdata.value = weatherdata.value / 2.237;
-      return weatherdata.value;
+    if ((state.unit = "mph")) {
+      state.unit = "ms";
+      state.value = state.value / 2.237;
+      return state.value;
     }
   };
 
-  return { ...wind, ...state };
+  return state;
 }
 
 function WeatherPrediction(time, place, type, unit, max, min) {
-  const state = { max, min };
-  let eventClass = EventClass(time, place);
-  let dataType = DataType(type, unit);
+  const state = { ...EventClass(time, place), ...DataType(type, unit), max, min };
 
   state.matches = (data) => {
     return (
-      data.time == eventclass.time &&
-      data.place == eventclass.place &&
-      data.type == dataType.type &&
-      data.unit == dataType.unit &&
+      data.time == state.time &&
+      data.place == state.place &&
+      data.type == state.type &&
+      data.unit == state.unit &&
       data.value < state.max &&
       data.value > state.min
     );
@@ -107,27 +99,27 @@ function WeatherPrediction(time, place, type, unit, max, min) {
   state.getMax = () => state.max;
   state.getMin = () => state.min;
 
-  return { ...eventClass, ...dataType, ...state };
+  return state;
 }
 
 function TemperaturePrediction(time, place, type, unit, max, min) {
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
+  const state = { ...WeatherPrediction(time, place, type, unit, max, min) }
 
-  function convertToF() {
+  state.convertToF = () => {
     if (weatherPrediction.type == "C") {
       weatherPrediction.type == "F";
       weatherPrediction.value = weatherPrediction.value * (9 / 5) + 32;
       return weatherPrediction.value;
     }
   }
-  function convertToC() {
+  state.convertToC = () => {
     if (weatherPrediction.type == "F") {
       weatherPrediction.type == "C";
       weatherPrediction.value = (weatherPrediction.value - 32) * (5 / 9);
       return weatherPrediction.value;
     }
   }
-  return { ...weatherPrediction, convertToC, convertToF };
+  return state;
 }
 
 function PrecipitationPrediction(
@@ -138,51 +130,49 @@ function PrecipitationPrediction(
   value,
   expectedTypes
 ) {
-  const state = { expectedTypes };
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, value);
+  const state = { ...WeatherPrediction(time, place, type, unit, value), expectedTypes };
 
   state.getExpectedTypes = () => state.expectedTypes;
   state.matches = (data) => {};
   state.convertToInches = () => {
-    if (weatherPrediction.unit == "mm") {
-      weatherPrediction.unit = "inches";
-      weatherPrediction.value = weatherPrediction.value / 25.4;
-      return weatherPrediction.value;
+    if (state.unit == "mm") {
+      state.unit = "inches";
+      state.value = state.value / 25.4;
+      return state.value;
     }
   };
   state.convertToMM = () => {
-    if (weatherPrediction.unit == "inches") {
-      weatherPrediction.unit == "mm";
-      weatherPrediction.value = weatherPrediction.value * 25.4;
-      return weatherPrediction.value;
+    if (state.unit == "inches") {
+      state.unit == "mm";
+      state.value = state.value * 25.4;
+      return state.value;
     }
   };
-  return { ...weatherPrediction, ...state };
+  return state;
 }
 
 function WindPrediction(time, place, type, unit, value, expectedDirections) {
-  const state = { expectedDirections };
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, value);
+  const state = { ...WeatherPrediction(time, place, type, unit, value), expectedDirections };
 
   state.getExpectedDirections = () => state.expectedDirections;
   state.matches = (data) => {};
   state.convertToMph = () => {
-    if ((weatherPrediction.unit = "ms")) {
-      weatherPrediction.unit = "mph";
-      weatherPrediction.value = weatherPrediction.value * 2.237;
-      return weatherPrediction.value;
+    if ((state.unit = "ms")) {
+      state.unit = "mph";
+      state.value = state.value * 2.237;
+      return state.value;
     }
   };
 
   state.convertToMs = () => {
-    if ((weatherPrediction.unit = "mph")) {
-      wiweatherPredictionnd.unit = "ms";
-      weatherPrediction.value = weatherPrediction.value / 2.237;
-      return weatherPrediction.value;
+    if ((state.unit = "mph")) {
+      state.unit = "ms";
+      state.value = state.value / 2.237;
+      return state.value;
     }
   };
 
-  return { ...weatherPrediction, ...state };
+  return state;
 }
 
 function WeatherForecast(data) {
@@ -340,8 +330,8 @@ const datatypetypes = DataType("c", 20);
 const weatherDatatest = WeatherData(20, "Bucharest", "c", 20, 22);
 console.log(weatherDatatest.getType());
 
-const temperaturetest = Temperature(20, "Bucharest", "F", 20, 22);
-
-console.log(temperaturetest.convertToC());
+const temperaturetest = Temperature(20, "Bucharest", "US", "F", 20);
+temperaturetest.convertToC()
+console.log(temperaturetest.getValue());
 console.log(weatherDatatest);
 console.log(temperaturetest);
