@@ -61,7 +61,7 @@ function Precipitation(time, place, type, unit, value, precipitationType) {
       weatherData.value = weatherdata.value * 25.4;
       return weatherData.value;
     }
-  }
+  };
   return { ...weatherData, ...state };
 }
 
@@ -107,7 +107,7 @@ function WeatherPrediction(time, place, type, unit, max, min) {
   state.getMax = () => state.max;
   state.getMin = () => state.min;
 
-  return { ...eventClass, ...dataType, ...state }
+  return { ...eventClass, ...dataType, ...state };
 }
 
 function TemperaturePrediction(time, place, type, unit, max, min) {
@@ -130,14 +130,19 @@ function TemperaturePrediction(time, place, type, unit, max, min) {
   return { ...weatherPrediction, convertToC, convertToF };
 }
 
-function PrecipitationPrediction(time, place, type, unit, value, expectedTypes) {
+function PrecipitationPrediction(
+  time,
+  place,
+  type,
+  unit,
+  value,
+  expectedTypes
+) {
   const state = { expectedTypes };
   let weatherPrediction = WeatherPrediction(time, place, type, unit, value);
 
   state.getExpectedTypes = () => state.expectedTypes;
-  state.matches = (data) => {
-
-  };
+  state.matches = (data) => {};
   state.convertToInches = () => {
     if (weatherPrediction.unit == "mm") {
       weatherPrediction.unit = "inches";
@@ -151,7 +156,7 @@ function PrecipitationPrediction(time, place, type, unit, value, expectedTypes) 
       weatherPrediction.value = weatherPrediction.value * 25.4;
       return weatherPrediction.value;
     }
-  }
+  };
   return { ...weatherPrediction, ...state };
 }
 
@@ -320,7 +325,7 @@ function WeatherHistory(data) {
 
 function DateInterval(from, to) {
   const state = { from, to };
-
+  
   state.getFrom = () => state.from;
   state.getTo = () => state.to;
   state.contains(d) = () => {
