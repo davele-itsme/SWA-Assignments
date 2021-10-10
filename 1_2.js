@@ -1,3 +1,15 @@
+const TypesEnum = { INT: "International", US: "US" };
+Object.freeze(TypesEnum); //seal and freeze the object
+
+const TemperatureUnitEnum = { C: "Celsius", F: "Fahrenheit" };
+Object.freeze(TemperatureUnitEnum);
+
+const PrecipitationUnitEnum = { MM: "mm", INCHES: "Inches" };
+Object.freeze(PrecipitationUnitEnum);
+
+const WindUnitEnum = { MS: "ms", MPH: "mph" };
+Object.freeze(WindUnitEnum);
+
 function EventClass(time, place) {
   //Renamed to EventClass so that it is not confused with Event
   this.time = time;
@@ -29,15 +41,17 @@ function Temperature(time, place, type, unit, value) {
   WeatherData.call(this, time, place, type, unit, value);
 
   this.convertToF = () => {
-    if (this.unit == "C") {
-      this.unit = "F";
+    if (this.type == TypesEnum.International) {
+      this.type = TypesEnum.US;
+      this.unit = TemperatureUnitEnum.F;
       this.value = this.value * (9 / 5) + 32;
     }
   };
   this.convertToC = () => {
-    if (this.unit == "F") {
-      this.unit = "C";
-      this.value = (5 / 9) * (this.value - 32);
+    if (this.type == TypesEnum.US) {
+      this.type = TypesEnum.International;
+      this.unit = TemperatureUnitEnum.C;
+      this.value = (this.value - 32) * (5 / 9);
     }
   };
 }
@@ -49,14 +63,16 @@ function Precipitation(time, place, type, unit, value, precipitationType) {
 
   this.getPrecipitationType = () => this.precipitationType;
   this.convertToInches = () => {
-    if (this.unit == "mm") {
-      this.unit = "inches";
+    if (this.type == TypesEnum.International) {
+      this.type = TypesEnum.US;
+      this.unit = PrecipitationUnitEnum.INCHES;
       this.value = this.value / 25.4;
     }
   };
   this.convertToMM = () => {
-    if (this.unit == "inches") {
-      this.unit = "mm";
+    if (this.type == TypesEnum.US) {
+      this.type = TypesEnum.International;
+      this.unit = PrecipitationUnitEnum.MM;
       this.value = this.value * 25.4;
     }
   };
@@ -69,14 +85,16 @@ function Wind(time, place, type, unit, value, direction) {
 
   this.getDirection = () => this.direction;
   this.convertToMPH = () => {
-    if (this.unit == "ms") {
-      this.unit = "mph";
+    if (this.type == TypesEnum.International) {
+      this.type = TypesEnum.US;
+      this.unit = WindUnitEnum.MPH;
       this.value = this.value * 2.237;
     }
   };
   this.convertToMS = () => {
-    if (this.unit == "mph") {
-      this.unit = "ms";
+    if (this.type == TypesEnum.US) {
+      this.type = TypesEnum.International;
+      this.unit = WindUnitEnum.MS;
       this.value = this.value / 2.237;
     }
   };
@@ -108,15 +126,17 @@ Object.setPrototypeOf(WeatherPrediction.prototype, DataType.prototype);
 function TemperaturePrediction(time, place, type, unit, value) {
   WeatherPrediction.call(this, time, place, type, unit, value);
   this.convertToF = () => {
-    if (this.unit == "C") {
-      this.unit = "F";
+    if (this.type == TypesEnum.International) {
+      this.type = TypesEnum.US;
+      this.unit = TemperatureUnitEnum.F;
       this.value = this.value * (9 / 5) + 32;
     }
   };
   this.convertToC = () => {
-    if (this.unit == "F") {
-      this.unit = "C";
-      this.value = (5 / 9) * (this.value - 32);
+    if (this.type == TypesEnum.US) {
+      this.type = TypesEnum.International;
+      this.unit = TemperatureUnitEnum.C;
+      this.value = (this.value - 32) * (5 / 9);
     }
   };
 }
@@ -132,14 +152,16 @@ function PrecipitationPrediction(time, place, type, unit, expectedTypes) {
   this.getExpectedTypes = () => this.expectedTypes;
   this.matches = (data) => {};
   this.convertToInches = () => {
-    if (this.unit == "mm") {
-      this.unit = "inches";
+    if (this.type == TypesEnum.International) {
+      this.type = TypesEnum.US;
+      this.unit = PrecipitationUnitEnum.INCHES;
       this.value = this.value / 25.4;
     }
   };
   this.convertToMM = () => {
-    if (this.unit == "inches") {
-      this.unit = "mm";
+    if (this.type == TypesEnum.US) {
+      this.type = TypesEnum.International;
+      this.unit = PrecipitationUnitEnum.MM;
       this.value = this.value * 25.4;
     }
   };
@@ -156,14 +178,16 @@ function WindPrediction(time, place, type, unit, value, expectedDirections) {
   this.getExpectedDirections = () => this.expectedDirections;
   this.matches = (data) => {};
   this.convertToMPH = () => {
-    if (this.unit == "ms") {
-      this.unit = "mph";
+    if (this.type == TypesEnum.International) {
+      this.type = TypesEnum.US;
+      this.unit = WindUnitEnum.MPH;
       this.value = this.value * 2.237;
     }
   };
   this.convertToMS = () => {
-    if (this.unit == "mph") {
-      this.unit = "ms";
+    if (this.type == TypesEnum.US) {
+      this.type = TypesEnum.International;
+      this.unit = WindUnitEnum.MS;
       this.value = this.value / 2.237;
     }
   };
@@ -191,7 +215,10 @@ function WeatherForecast(data) {
     this.periodFilter = period;
   };
   this.clearPeriodFilter = () => {
-    this.periodFilter = new DateInterval(0, 0);
+    let from = new Date(2000, 1, 1);
+    let to = Date.now();
+    let dateInterval = new DateInterval(from, to);
+    this.periodFilter = dateInterval;
   };
   this.convertToUSUnits = () => {
     this.data.forEach((weatherPrediction) => {
@@ -229,7 +256,7 @@ function WeatherForecast(data) {
       (x) =>
         x.place == this.placeFilter &&
         x.type == this.typeFilter &&
-        x.period == this.periodFilter
+        this.periodFilter.contains(x.getTime())
     );
   };
 }
@@ -255,7 +282,10 @@ function WeatherHistory(data) {
     this.periodFilter = period;
   };
   this.clearPeriodFilter = () => {
-    this.periodFilter = new DateInterval(0, 0);
+    let from = new Date(2000, 1, 1);
+    let to = Date.now();
+    let dateInterval = new DateInterval(from, to);
+    this.periodFilter = dateInterval;
   };
   this.convertToUSUnits = () => {
     this.data.forEach((weatherPrediction) => {
@@ -288,12 +318,12 @@ function WeatherHistory(data) {
   this.add = (data) => {
     this.data = this.data.concat(data);
   };
-  this.getFilteredPredictions = () => {
+  this.getFilteredData = () => {
     return this.data.filter(
       (x) =>
         x.place == this.placeFilter &&
         x.type == this.typeFilter &&
-        x.period == this.periodFilter
+        this.periodFilter.contains(x.getTime())
     );
   };
 }
@@ -304,6 +334,68 @@ function DateInterval(from, to) {
   this.getFrom = () => this.from;
   this.getTo = () => this.to;
   this.contains = (d) => {
-    return d > from && d < to;
+    return d >= this.from && d <= this.to;
   };
 }
+
+//TESTING
+
+var temperature = new Temperature(
+  new Date(2015, 6, 5),
+  "Prague",
+  TypesEnum.US,
+  TemperatureUnitEnum.F,
+  5
+);
+console.log(temperature.getValue() + " " + temperature.getUnit());
+temperature.convertToC();
+console.log(temperature.getValue() + " " + temperature.getUnit());
+temperature.convertToF();
+console.log(temperature.getValue() + " " + temperature.getUnit());
+
+console.log("-------------------------");
+
+var precipitation = new Precipitation(
+  new Date(2016, 5, 5),
+  "London",
+  TypesEnum.US,
+  PrecipitationUnitEnum.INCHES,
+  10,
+  "something"
+);
+console.log(precipitation.getValue() + " " + precipitation.getUnit());
+precipitation.convertToMM();
+console.log(precipitation.getValue() + " " + precipitation.getUnit());
+precipitation.convertToInches();
+console.log(precipitation.getValue() + " " + precipitation.getUnit());
+
+console.log("-------------------------");
+
+var wind = new Wind(
+  new Date(2019, 5, 5),
+  "Copenhagen",
+  TypesEnum.US,
+  WindUnitEnum.MPH,
+  10,
+  "west"
+);
+console.log(wind.getValue() + " " + wind.getUnit());
+wind.convertToMS();
+console.log(wind.getValue() + " " + wind.getUnit());
+wind.convertToMPH();
+console.log(wind.getValue() + " " + wind.getUnit());
+
+console.log("-------------------------");
+
+const weathers = [temperature, precipitation, wind];
+const weatherHistory = new WeatherHistory(weathers);
+console.log(weatherHistory.getTypeFilter());
+weatherHistory.setTypeFilter(TypesEnum.US);
+console.log(weatherHistory.getTypeFilter());
+weatherHistory.setPlaceFilter("Prague");
+console.log(weatherHistory.getPlaceFilter());
+weatherHistory.setPeriodFilter(
+  new DateInterval(new Date(2010, 5, 5), Date.now())
+);
+console.log(weatherHistory.getPeriodFilter());
+console.log(weatherHistory.getFilteredData());

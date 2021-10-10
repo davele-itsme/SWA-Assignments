@@ -1,126 +1,176 @@
+const TypesEnum = { INT: "International", US: "US" };
+Object.freeze(TypesEnum); //seal and freeze the object
+
+const TemperatureUnitEnum = { C: "Celsius", F: "Fahrenheit" };
+Object.freeze(TemperatureUnitEnum);
+
+const PrecipitationUnitEnum = { MM: "mm", INCHES: "Inches" };
+Object.freeze(PrecipitationUnitEnum);
+
+const WindUnitEnum = { MS: "ms", MPH: "mph" };
+Object.freeze(WindUnitEnum);
+
 function EventClass(time, place) {
   //Renamed to EventClass so that it is not confused with Event
   const state = { time, place };
 
-  state.getTime = () => state.time;
-  state.getPlace = () => state.place;
-  return state;
+  return {
+    getTime() {
+      return state.time;
+    },
+    getPlace() {
+      return state.place;
+    },
+  };
 }
 
 function DataType(type, unit) {
   const state = { type, unit };
 
-  state.getType = () => state.type;
-  state.getUnit = () => state.unit;
-  return state;
+  return {
+    getType() {
+      return state.type;
+    },
+    setType(type) {
+      state.type = type;
+    },
+    getUnit() {
+      return state.unit;
+    },
+    setUnit(unit) {
+      state.unit = unit;
+    },
+  };
 }
 
 function WeatherData(time, place, type, unit, value) {
-  const state = Object.assign({ value }, EventClass(time, place), DataType(type, unit));
-
-  state.getValue = () => state.value;
-  return state;
+  const state = { value };
+  let eventClass = EventClass(time, place);
+  let dataType = DataType(type, unit);
+  getValue = () => state.value;
+  setValue = (value) => {
+    state.value = value;
+  };
+  return Object.assign({ getValue, setValue }, eventClass, dataType);
 }
 
 function Temperature(time, place, type, unit, value) {
-  const state = Object.assign({}, WeatherData(time, place, type, unit, value));
-
-  state.convertToF = () => {
-    if (state.type == "C") {
-      state.type == "F";
-      state.value = state.value * (9 / 5) + 32;
+  let weatherData = WeatherData(time, place, type, unit, value);
+  convertToF = () => {
+    if (weatherData.getType() == TypesEnum.International) {
+      weatherData.setType(TypesEnum.US);
+      weatherData.setUnit(TemperatureUnitEnum.F);
+      let newValue = weatherData.getValue() * (9 / 5) + 32;
+      weatherData.setValue(newValue);
     }
-  }
-  state.convertToC = () => {
-    if (state.type == "F") {
-      state.type == "C";
-      state.value = (state.value - 32) * (5 / 9);
+  };
+  convertToC = () => {
+    if (weatherData.getType() == TypesEnum.US) {
+      weatherData.setType(TypesEnum.International);
+      weatherData.setUnit(TemperatureUnitEnum.C);
+      let newValue = (weatherData.getValue() - 32) * (5 / 9);
+      weatherData.setValue(newValue);
     }
-  }
-  return state;
+  };
+  return Object.assign({ convertToF, convertToC }, weatherData);
 }
 
 function Precipitation(time, place, type, unit, value, precipitationType) {
-  const state = Object.assign({ precipitationType }, WeatherData(time, place, type, unit, value));
+  const state = { precipitationType };
+  let weatherData = WeatherData(time, place, type, unit, value);
 
-  state.getPrecipitationType = () => state.precipitationType;
-  state.convertToInches = () => {
-    if (state.unit == "mm") {
-      state.unit = "inches";
-      state.value = state.value / 25.4;
-      return state.value;
+  getPrecipitationType = () => state.precipitationType;
+  convertToInches = () => {
+    if (weatherData.getType() == TypesEnum.International) {
+      weatherData.setType(TypesEnum.US);
+      weatherData.setUnit(PrecipitationUnitEnum.INCHES);
+      let newValue = weatherData.getValue() / 25.4;
+      weatherData.setValue(newValue);
     }
   };
-  state.convertToMM = () => {
-    if (state.unit == "inches") {
-      state.unit == "mm";
-      state.value = state.value * 25.4;
-      return state.value;
+  convertToMM = () => {
+    if (weatherData.getType() == TypesEnum.US) {
+      weatherData.setType(TypesEnum.International);
+      weatherData.setUnit(PrecipitationUnitEnum.MM);
+      let newValue = weatherData.getValue() * 25.4;
+      weatherData.setValue(newValue);
     }
   };
-  return state;
+  return Object.assign(
+    { getPrecipitationType, convertToInches, convertToMM },
+    weatherData
+  );
 }
 
 function Wind(time, place, type, unit, value, direction) {
-  const state = Object.assign({ direction }, WeatherData(time, place, type, unit, value));
+  const state = { direction };
+  let weatherData = WeatherData(time, place, type, unit, value);
 
-  state.getDirection = () => state.direction;
-  state.convertToMph = () => {
-    if ((state.unit = "ms")) {
-      state.unit = "mph";
-      state.value = state.value * 2.237;
-      return state.value;
+  getDirection = () => state.direction;
+  convertToMPH = () => {
+    if (weatherData.getType() == TypesEnum.International) {
+      weatherData.setType(TypesEnum.US);
+      weatherData.setUnit(WindUnitEnum.MPH);
+      let newValue = weatherData.getValue() * 2.237;
+      weatherData.setValue(newValue);
     }
   };
 
-  state.convertToMs = () => {
-    if ((state.unit = "mph")) {
-      state.unit = "ms";
-      state.value = state.value / 2.237;
-      return state.value;
+  convertToMS = () => {
+    if (weatherData.getType() == TypesEnum.US) {
+      weatherData.setType(TypesEnum.International);
+      weatherData.setUnit(WindUnitEnum.MS);
+      let newValue = weatherData.getValue() / 2.237;
+      weatherData.setValue(newValue);
     }
   };
 
-  return state;
+  return Object.assign(
+    { getDirection, convertToMPH, convertToMS },
+    weatherData
+  );
 }
 
 function WeatherPrediction(time, place, type, unit, max, min) {
-  const state = Object.assign({ max, min }, EventClass(time, place), DataType(type, unit));
-
-  state.matches = (data) => {
+  const state = { max, min };
+  let eventClass = EventClass(time, place);
+  let dataType = DataType(type, unit);
+  matches = (data) => {
     return (
-      data.time == state.time &&
-      data.place == state.place &&
-      data.type == state.type &&
-      data.unit == state.unit &&
+      data.time == eventClass.getTime() &&
+      data.place == eventClass.getPlace() &&
+      data.type == dataType.getType() &&
+      data.unit == dataType.getUnit() &&
       data.value < state.max &&
       data.value > state.min
     );
   };
-  state.getMax = () => state.max;
-  state.getMin = () => state.min;
+  getMax = () => state.max;
+  getMin = () => state.min;
 
-  return state;
+  return Object.assign({ matches, getMax, getMin }, eventClass, dataType);
 }
 
 function TemperaturePrediction(time, place, type, unit, max, min) {
-  const state = Object.assign({}, WeatherPrediction(time, place, type, unit, max, min));
+  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
 
-  state.convertToF = () => {
-    if (state.type == "C") {
-      state.type == "F";
-      state.value = state.value * (9 / 5) + 32;
-      return state.value;
+  convertToF = () => {
+    if (weatherData.getType() == TypesEnum.International) {
+      weatherData.setType(TypesEnum.US);
+      weatherData.setUnit(TemperatureUnitEnum.F);
+      let newValue = weatherPrediction.getValue() * (9 / 5) + 32;
+      weatherPrediction.setValue(newValue);
     }
-  }
-  state.convertToC = () => {
-    if (state.type == "F") {
-      state.type == "C";
-      state.value = (state.value - 32) * (5 / 9);
-      return state.value;
+  };
+  convertToC = () => {
+    if (weatherData.getType() == TypesEnum.US) {
+      weatherData.setType(TypesEnum.International);
+      weatherData.setUnit(TemperatureUnitEnum.C);
+      let newValue = (weatherPrediction.getValue() - 32) * (5 / 9);
+      weatherPrediction.setValue(newValue);
     }
-  }
-  return state;
+  };
+  return Object.assign({ convertToF, convertToC }, weatherPrediction);
 }
 
 function PrecipitationPrediction(
@@ -132,75 +182,101 @@ function PrecipitationPrediction(
   min,
   expectedTypes
 ) {
-  const state = Object.assign({ expectedTypes }, WeatherPrediction(time, place, type, unit, max, min));
+  const state = { expectedTypes };
+  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
 
-  state.getExpectedTypes = () => state.expectedTypes;
-  state.matches = (data) => {};
-  state.convertToInches = () => {
-    if (state.unit == "mm") {
-      state.unit = "inches";
-      state.value = state.value / 25.4;
-      return state.value;
+  getExpectedTypes = () => state.expectedTypes;
+  matches = (data) => {};
+  convertToInches = () => {
+    if (weatherData.getType() == TypesEnum.International) {
+      weatherData.setType(TypesEnum.US);
+      weatherData.setUnit(PrecipitationUnitEnum.INCHES);
+      let newValue = weatherPrediction.getValue() / 25.4;
+      weatherPrediction.setValue(newValue);
     }
   };
-  state.convertToMM = () => {
-    if (state.unit == "inches") {
-      state.unit == "mm";
-      state.value = state.value * 25.4;
-      return state.value;
+  convertToMM = () => {
+    if (weatherData.getType() == TypesEnum.US) {
+      weatherData.setType(TypesEnum.International);
+      weatherData.setUnit(PrecipitationUnitEnum.MM);
+      let newValue = weatherPrediction.getValue() * 25.4;
+      weatherPrediction.setValue(newValue);
     }
   };
-  return state;
+  return Object.assign(
+    { getExpectedTypes, matches, convertToInches, convertToMM },
+    weatherPrediction
+  );
 }
 
 function WindPrediction(time, place, type, unit, max, min, expectedDirections) {
-  const state = Object.assign({ expectedDirections }, WeatherPrediction(time, place, type, unit, max, min));
+  const state = { expectedDirections };
+  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
 
-  state.getExpectedDirections = () => state.expectedDirections;
-  state.matches = (data) => {};
-  state.convertToMph = () => {
-    if ((state.unit = "ms")) {
-      state.unit = "mph";
-      state.value = state.value * 2.237;
-      return state.value;
+  getExpectedDirections = () => state.expectedDirections;
+  matches = (data) => {};
+  convertToMPH = () => {
+    if (weatherData.getType() == TypesEnum.International) {
+      weatherData.setType(TypesEnum.US);
+      weatherData.setUnit(WindUnitEnum.MPH);
+      let newValue = weatherPrediction.getValue() * 2.237;
+      weatherPrediction.setValue(newValue);
     }
   };
 
-  state.convertToMs = () => {
-    if ((state.unit = "mph")) {
-      state.unit = "ms";
-      state.value = state.value / 2.237;
-      return state.value;
+  convertToMS = () => {
+    if (weatherData.getType() == TypesEnum.US) {
+      weatherData.setType(TypesEnum.International);
+      weatherData.setUnit(WindUnitEnum.MS);
+      let newValue = weatherPrediction.getValue() / 2.237;
+      weatherPrediction.setValue(newValue);
     }
   };
 
-  return state;
+  return Object.assign(
+    { getExpectedDirections, matches, convertToMPH, convertToMS },
+    weatherPrediction
+  );
 }
 
 function WeatherForecast(data) {
   const state = { data };
+  const methods = {};
 
-  state.getPlaceFilter = () => state.placeFilter;
+  methods.getPlaceFilter = () => state.placeFilter;
 
-  state.setPlaceFilter = (filter) => {
-    state.placefilter = filter;
+  methods.setPlaceFilter = (filter) => {
+    state.placeFilter = filter;
   };
 
-  state.clearPlaceFilter = () => {
+  methods.clearPlaceFilter = () => {
     state.placeFilter = "";
   };
 
-  state.getPeriodFilter = () => state.periodFilter;
+  methods.getTypeFilter = () => state.typeFilter;
 
-  state.setPeriodFilter = (period) => {
+  methods.setTypeFilter = (type) => {
+    state.typeFilter = type;
+  };
+
+  methods.clearTypeFilter = () => {
+    state.typeFilter = "";
+  };
+
+  methods.getPeriodFilter = () => state.periodFilter;
+
+  methods.setPeriodFilter = (period) => {
     state.periodFilter = period;
   };
 
-  state.clearPeriodFilter = () => {
-    state.periodFilter = "";
+  methods.clearPeriodFilter = () => {
+    let from = new Date(2000, 1, 1);
+    let to = Date.now();
+    let dateInterval = DateInterval(from, to);
+    state.periodFilter = dateInterval;
   };
 
-  state.convertToUSUnits = () => {
+  methods.convertToUSUnits = () => {
     state.data.forEach((weatherPrediction) => {
       switch (true) {
         case weatherPrediction instanceof TemperaturePrediction:
@@ -215,7 +291,7 @@ function WeatherForecast(data) {
     });
   };
 
-  state.convertToInternationalUnits = () => {
+  methods.convertToInternationalUnits = () => {
     state.data.forEach((weatherPrediction) => {
       switch (true) {
         case weatherPrediction instanceof TemperaturePrediction:
@@ -230,46 +306,60 @@ function WeatherForecast(data) {
     });
   };
 
-  state.add = (data) => {
+  methods.add = (data) => {
     state.data = state.data.concat(data);
   };
 
-  state.getFilteredPredictions = () => {
+  methods.getFilteredPredictions = () => {
     return state.data.filter(
       (x) =>
-        x.place == state.placeFilter &&
-        x.type == state.typeFilter &&
-        x.period == state.periodFilter
+        x.getPlace() == state.placeFilter &&
+        x.getType() == state.typeFilter &&
+        state.periodFilter.contains(x.getTime())
     );
   };
 
-  return state;
+  return methods;
 }
 
 function WeatherHistory(data) {
   const state = { data };
+  const methods = {};
 
-  state.getPlaceFilter = () => state.placeFilter;
+  methods.getPlaceFilter = () => state.placeFilter;
 
-  state.setPlaceFilter = (filter) => {
-    state.placefilter = filter;
+  methods.setPlaceFilter = (filter) => {
+    state.placeFilter = filter;
   };
 
-  state.clearPlaceFilter = () => {
+  methods.clearPlaceFilter = () => {
     state.placeFilter = "";
   };
 
-  state.getPeriodFilter = () => state.periodFilter;
+  methods.getTypeFilter = () => state.typeFilter;
 
-  state.setPeriodFilter = (period) => {
+  methods.setTypeFilter = (type) => {
+    state.typeFilter = type;
+  };
+
+  methods.clearTypeFilter = () => {
+    state.typeFilter = "";
+  };
+
+  methods.getPeriodFilter = () => state.periodFilter;
+
+  methods.setPeriodFilter = (period) => {
     state.periodFilter = period;
   };
 
-  state.clearPeriodFilter = () => {
-    state.periodFilter = "";
+  methods.clearPeriodFilter = () => {
+    let from = new Date(2000, 1, 1);
+    let to = Date.now();
+    let dateInterval = DateInterval(from, to);
+    state.periodFilter = dateInterval;
   };
 
-  state.convertToUSUnits = () => {
+  methods.convertToUSUnits = () => {
     state.data.forEach((weatherPrediction) => {
       switch (true) {
         case weatherPrediction instanceof Temperature:
@@ -284,7 +374,7 @@ function WeatherHistory(data) {
     });
   };
 
-  state.convertToInternationalUnits = () => {
+  methods.convertToInternationalUnits = () => {
     state.data.forEach((weatherPrediction) => {
       switch (true) {
         case weatherPrediction instanceof Temperature:
@@ -299,30 +389,90 @@ function WeatherHistory(data) {
     });
   };
 
-  state.add = (data) => {
+  methods.add = (data) => {
     state.data = state.data.concat(data);
   };
 
-  state.getFilteredPredictions = () => {
+  methods.getFilteredData = () => {
     return state.data.filter(
       (x) =>
-        x.place == state.placeFilter &&
-        x.type == state.typeFilter &&
-        x.period == state.periodFilter
+        x.getPlace() == state.placeFilter &&
+        x.getType() == state.typeFilter &&
+        state.periodFilter.contains(x.getTime())
     );
   };
 
-  return state;
+  return methods;
 }
 
 function DateInterval(from, to) {
   const state = { from, to };
-  
-  state.getFrom = () => state.from;
-  state.getTo = () => state.to;
-  state.contains(d) = () => {
-    return d > state.from && d < state.to;
-  }
 
-  return state;
+  getFrom = () => state.from;
+  getTo = () => state.to;
+  contains = (d) => {
+    return d >= state.from && d <= state.to;
+  };
+
+  return { getFrom, getTo, contains };
 }
+
+//TESTING
+
+var temperature = Temperature(
+  new Date(2015, 6, 5),
+  "Prague",
+  TypesEnum.US,
+  TemperatureUnitEnum.F,
+  5
+);
+console.log(temperature.getValue() + " " + temperature.getUnit());
+temperature.convertToC();
+console.log(temperature.getValue() + " " + temperature.getUnit());
+temperature.convertToF();
+console.log(temperature.getValue() + " " + temperature.getUnit());
+
+console.log("-------------------------");
+
+var precipitation = Precipitation(
+  new Date(2016, 5, 5),
+  "London",
+  TypesEnum.US,
+  PrecipitationUnitEnum.INCHES,
+  10,
+  "something"
+);
+console.log(precipitation.getValue() + " " + precipitation.getUnit());
+precipitation.convertToMM();
+console.log(precipitation.getValue() + " " + precipitation.getUnit());
+precipitation.convertToInches();
+console.log(precipitation.getValue() + " " + precipitation.getUnit());
+
+console.log("-------------------------");
+
+var wind = Wind(
+  new Date(2019, 5, 5),
+  "Copenhagen",
+  TypesEnum.US,
+  WindUnitEnum.MPH,
+  10,
+  "west"
+);
+console.log(wind.getValue() + " " + wind.getUnit());
+wind.convertToMS();
+console.log(wind.getValue() + " " + wind.getUnit());
+wind.convertToMPH();
+console.log(wind.getValue() + " " + wind.getUnit());
+
+console.log("-------------------------");
+
+const weathers = [temperature, precipitation, wind];
+const weatherHistory = WeatherHistory(weathers);
+console.log(weatherHistory.getTypeFilter());
+weatherHistory.setTypeFilter(TypesEnum.US);
+console.log(weatherHistory.getTypeFilter());
+weatherHistory.setPlaceFilter("Prague");
+console.log(weatherHistory.getPlaceFilter());
+weatherHistory.setPeriodFilter(DateInterval(new Date(2010, 5, 5), Date.now()));
+console.log(weatherHistory.getPeriodFilter());
+console.log(weatherHistory.getFilteredData());
