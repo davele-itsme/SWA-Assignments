@@ -34,8 +34,8 @@ function WeatherData(time, place, type, unit, value) {
 
   this.getValue = () => this.value;
 }
-Object.setPrototypeOf(WeatherData.prototype, EventClass.prototype);
-Object.setPrototypeOf(WeatherData.prototype, DataType.prototype);
+WeatherData.prototype = Object.assign({}, Event.prototype, DataType.prototype);
+WeatherData.prototype.constructor = WeatherData;
 
 function Temperature(time, place, type, unit, value) {
   WeatherData.call(this, time, place, type, unit, value);
@@ -120,8 +120,12 @@ function WeatherPrediction(time, place, type, unit, max, min) {
   this.getMax = () => this.max;
   this.getMin = () => this.min;
 }
-Object.setPrototypeOf(WeatherPrediction.prototype, EventClass.prototype);
-Object.setPrototypeOf(WeatherPrediction.prototype, DataType.prototype);
+WeatherPrediction.prototype = Object.assign(
+  {},
+  EventClass.prototype,
+  DataType.prototype
+);
+WeatherPrediction.prototype.constructor = WeatherPrediction;
 
 function TemperaturePrediction(time, place, type, unit, value) {
   WeatherPrediction.call(this, time, place, type, unit, value);
@@ -399,3 +403,17 @@ weatherHistory.setPeriodFilter(
 );
 console.log(weatherHistory.getPeriodFilter());
 console.log(weatherHistory.getFilteredData());
+
+console.log("-------------------------------------------------");
+
+const eventClass = new EventClass(new Date(2011, 6, 6), "HoChiMin");
+console.log(eventClass.__proto__);
+const weatherData = new WeatherData(
+  new Date(2015, 5, 5),
+  "Prague",
+  TypesEnum.US,
+  "something",
+  "some"
+);
+console.log(weatherData);
+console.log(Object.getPrototypeOf(weatherData));
