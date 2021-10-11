@@ -1,9 +1,10 @@
-import { Temperature } from "./weatherdata/Temperature.mjs";
-import { Precipitation } from "./weatherdata/Precipitation.mjs";
-import { Wind } from "./weatherdata/Wind.mjs";
+import { TemperaturePrediction } from "./weatherprediction/TemperaturePrediction.mjs";
+import { PrecipitationPrediction } from "./weatherprediction/PrecipitationPrediction.mjs";
+import { WindPrediction } from "./weatherprediction/WindPrediction.mjs";
 import { DateInterval } from "./../common/DateInterval.mjs";
 
-function WeatherHistory(data) {
+// TODO: Make it as WeatherHistory/Diagram assignment
+function WeatherForecast(data) {
   const state = { data };
   const methods = {};
 
@@ -41,14 +42,14 @@ function WeatherHistory(data) {
   };
 
   methods.convertToUSUnits = () => {
-    state.data.forEach((weatherData) => {
+    state.data.forEach((weatherPrediction) => {
       switch (true) {
-        case weatherData instanceof Temperature:
-          weatherData.convertToF();
-        case weatherData instanceof Precipitation:
-          weatherData.convertToInches();
-        case weatherData instanceof Wind:
-          weatherData.convertToMPH();
+        case weatherPrediction instanceof TemperaturePrediction:
+          weatherPrediction.convertToF();
+        case weatherPrediction instanceof PrecipitationPrediction:
+          weatherPrediction.convertToInches();
+        case weatherPrediction instanceof WindPrediction:
+          weatherPrediction.convertToMPH();
         default:
           console.log("Error happened");
       }
@@ -56,14 +57,14 @@ function WeatherHistory(data) {
   };
 
   methods.convertToInternationalUnits = () => {
-    state.data.forEach((weatherData) => {
+    state.data.forEach((weatherPrediction) => {
       switch (true) {
-        case weatherData instanceof Temperature:
-          weatherData.convertToC();
-        case weatherData instanceof Precipitation:
-          weatherData.convertToMM();
-        case weatherData instanceof Wind:
-          weatherData.convertToMS();
+        case weatherPrediction instanceof TemperaturePrediction:
+          weatherPrediction.convertToC();
+        case weatherPrediction instanceof PrecipitationPrediction:
+          weatherPrediction.convertToMM();
+        case weatherPrediction instanceof WindPrediction:
+          weatherPrediction.convertToMS();
         default:
           console.log("Error happened");
       }
@@ -74,7 +75,7 @@ function WeatherHistory(data) {
     state.data = state.data.concat(data);
   };
 
-  methods.getFilteredData = () => {
+  methods.getFilteredPredictions = () => {
     return state.data.filter(
       (x) =>
         x.getPlace() == state.placeFilter &&
@@ -86,4 +87,4 @@ function WeatherHistory(data) {
   return methods;
 }
 
-export { WeatherHistory };
+export { WeatherForecast };

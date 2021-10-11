@@ -61,12 +61,15 @@ console.log(wind.getValue() + " " + wind.getUnit());
 console.log("-------------------------");
 
 const weathers = [temperature, precipitation, wind];
+const weathers2 = [temperature];
 const weatherHistory = WeatherHistory(weathers);
-console.log(weatherHistory.getTypeFilter());
-weatherHistory.setTypeFilter(TypesEnum.US);
-console.log(weatherHistory.getTypeFilter());
-weatherHistory.setPlaceFilter("Prague");
-console.log(weatherHistory.getPlaceFilter());
-weatherHistory.setPeriodFilter(DateInterval(new Date(2010, 5, 5), Date.now()));
-console.log(weatherHistory.getPeriodFilter());
-console.log(weatherHistory.getFilteredData());
+console.log(weatherHistory.including(weathers2).length == 4);
+const lol = weatherHistory.forPlace("Copenhagen");
+console.log(lol.getData().length == 1);
+console.log(
+  weatherHistory.convertToInternationalUnits().getData()[0].getUnit()
+);
+
+// TODO: Make everything immutable
+// TODO: Use of reduce method
+// TODO: Maybe create own higher order fucntion?
