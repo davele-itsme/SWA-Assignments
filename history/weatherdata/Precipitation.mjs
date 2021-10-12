@@ -3,7 +3,8 @@ import { WeatherData } from "./WeatherData.mjs";
 
 function Precipitation(time, place, type, unit, value, precipitationType) {
   const state = { precipitationType };
-  let weatherData = WeatherData(time, place, type, unit, value);
+  const weatherData = WeatherData(time, place, type, unit, value);
+  Object.freeze(this);
 
   function getPrecipitationType() {
     return state.precipitationType;

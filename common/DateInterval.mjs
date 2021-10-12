@@ -1,5 +1,6 @@
 function DateInterval(from, to) {
   const state = { from, to };
+  Object.freeze(this);
 
   function getFrom() {
     return state.from;
@@ -13,5 +14,6 @@ function DateInterval(from, to) {
 
   return { getFrom, getTo, contains };
 }
+Object.freeze(DateInterval);
 
 export { DateInterval };

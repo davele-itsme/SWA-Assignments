@@ -1,6 +1,6 @@
 function DataType(type, unit) {
   const state = { type, unit };
-
+  Object.freeze(this);
   return {
     getType() {
       return state.type;
@@ -16,5 +16,7 @@ function DataType(type, unit) {
     },
   };
 }
+
+Object.freeze(DataType);
 
 export { DataType };
