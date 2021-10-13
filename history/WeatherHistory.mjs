@@ -1,3 +1,7 @@
+import { Precipitation } from "./weatherdata/Precipitation.mjs";
+import { Temperature } from "./weatherdata/Temperature.mjs";
+import { Wind } from "./weatherdata/Wind.mjs";
+
 class WeatherHistory {
   constructor(data) {
     this.data = data;
@@ -22,20 +26,32 @@ class WeatherHistory {
     );
   }
 
-  convertToUSUnits() {
-    const data = this.data.map((weatherData) => weatherData);
-    console.log(data);
-    for (const x of data) {
-      x.convertToF();
-    }
-    return new WeatherHistory(data);
-  }
-
   convertToInternationalUnits() {
     return new WeatherHistory(
       this.data.map((weatherData) => {
-        weatherData.convertToC();
-        return weatherData;
+        switch (true) {
+          case weatherData instanceof Temperature:
+            return weatherData.convertToC();
+          case weatherData instanceof Precipitation:
+            return weatherData.convertToMM();
+          case weatherData instanceof Wind:
+            return weatherData.convertToMS();
+        }
+      })
+    );
+  }
+
+  convertToUSUnits() {
+    return new WeatherHistory(
+      this.data.map((weatherData) => {
+        switch (true) {
+          case weatherData instanceof Temperature:
+            return weatherData.convertToF();
+          case weatherData instanceof Precipitation:
+            return weatherData.convertToInches();
+          case weatherData instanceof Wind:
+            return weatherData.convertToMPH();
+        }
       })
     );
   }

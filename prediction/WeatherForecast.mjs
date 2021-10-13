@@ -1,3 +1,7 @@
+import { PrecipitationPrediction } from "./weatherprediction/PrecipitationPrediction.mjs";
+import { TemperaturePrediction } from "./weatherprediction/TemperaturePrediction.mjs";
+import { WindPrediction } from "./weatherprediction/WindPrediction.mjs";
+
 class WeatherForecast {
   constructor(data) {
     this.data = data;
@@ -26,20 +30,32 @@ class WeatherForecast {
     return new WeatherForecast([...this.data, ...data]);
   }
 
-  convertToUSUnits() {
-    const data = this.data.map((weatherData) => weatherData);
-    console.log(data);
-    for (const x of data) {
-      x.convertToF();
-    }
-    return new WeatherForecast(data);
-  }
-
   convertToInternationalUnits() {
     return new WeatherForecast(
       this.data.map((weatherData) => {
-        weatherData.convertToC();
-        return weatherData;
+        switch (true) {
+          case weatherData instanceof TemperaturePrediction:
+            return weatherData.convertToC();
+          case weatherData instanceof PrecipitationPrediction:
+            return weatherData.convertToMM();
+          case weatherData instanceof WindPrediction:
+            return weatherData.convertToMS();
+        }
+      })
+    );
+  }
+
+  convertToUSUnits() {
+    return new WeatherForecast(
+      this.data.map((weatherData) => {
+        switch (true) {
+          case weatherData instanceof TemperaturePrediction:
+            return weatherData.convertToF();
+          case weatherData instanceof PrecipitationPrediction:
+            return weatherData.convertToInches();
+          case weatherData instanceof WindPrediction:
+            return weatherData.convertToMPH();
+        }
       })
     );
   }
