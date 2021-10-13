@@ -1,87 +1,78 @@
-function WeatherHistory(data) {
-  const state = { data };
+class WeatherHistory {
+  constructor(data) {
+    this.data = data;
+    Object.freeze(this);
+  }
 
-  function forPlace(place) {
-    return WeatherHistory(
-      state.data.filter((weatherData) => weatherData.getPlace() == place)
+  forPlace(place) {
+    return new WeatherHistory(
+      this.data.filter((weatherData) => weatherData.getPlace() == place)
     );
   }
 
-  function forType(type) {
-    return WeatherHistory(
-      state.data.filter((weatherData) => weatherData.getType() == type)
+  forType(type) {
+    return new WeatherHistory(
+      this.data.filter((weatherData) => weatherData.getType() == type)
     );
   }
 
-  function forPeriod(period) {
-    return WeatherHistory(
-      state.data.filter((weatherData) => period.contains(weatherData.getTime()))
+  forPeriod(period) {
+    return new WeatherHistory(
+      this.data.filter((weatherData) => period.contains(weatherData.getTime()))
     );
   }
 
-  const mergeArrays = (a) => (b) => a.concat(b);
-
-  const including = mergeArrays(state.data);
-
-  function convertToUSUnits() {
-    const data = state.data.map((weatherData) => weatherData);
+  convertToUSUnits() {
+    const data = this.data.map((weatherData) => weatherData);
     console.log(data);
     for (const x of data) {
       x.convertToF();
     }
-    return WeatherHistory(data);
+    return new WeatherHistory(data);
   }
 
-  function convertToInternationalUnits() {
-    return WeatherHistory(
-      state.data.map((weatherData) => {
+  convertToInternationalUnits() {
+    return new WeatherHistory(
+      this.data.map((weatherData) => {
         weatherData.convertToC();
         return weatherData;
       })
     );
   }
 
-  function lowestValue() {
+  including(data) {
+    return new WeatherHistory([...this.data, ...data]);
+  }
+
+  lowestValue() {
     if (
-      new Set(state.data.map((x) => x.getType())).size !== 1 ||
-      state.data.size === 0
+      new Set(this.data.map((x) => x.getType())).size !== 1 ||
+      this.data.size === 0
     ) {
       return undefined;
     }
-    return state.data.reduce(
+    return this.data.reduce(
       (acc, val) => (acc < val.getValue() ? acc : val.getValue()),
-      state.data[0].getValue()
+      this.data[0].getValue()
     );
   }
 
-  function highestValue() {
+  highestValue() {
     if (
-      new Set(state.data.map((x) => x.getType())).size !== 1 ||
-      state.data.size === 0
+      new Set(this.data.map((x) => x.getType())).size !== 1 ||
+      this.data.size === 0
     ) {
       return undefined;
     }
-    return state.data.reduce(
+    return this.data.reduce(
       (acc, val) => (acc > val.getValue() ? acc : val.getValue()),
-      state.data[0].getValue()
+      this.data[0].getValue()
     );
   }
 
-  function getData() {
-    return [...state.data];
+  getData() {
+    return [...this.data];
   }
-
-  return {
-    forPlace,
-    forType,
-    forPeriod,
-    including,
-    convertToUSUnits,
-    convertToInternationalUnits,
-    lowestValue,
-    highestValue,
-    getData,
-  };
 }
 
 export { WeatherHistory };

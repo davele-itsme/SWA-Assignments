@@ -1,34 +1,40 @@
 import { TypesEnum, PrecipitationUnitEnum } from "./../../common/Enums.mjs";
 import { WeatherData } from "./WeatherData.mjs";
 
-function Precipitation(time, place, type, unit, value, precipitationType) {
-  const state = { precipitationType };
-  const weatherData = WeatherData(time, place, type, unit, value);
-  Object.freeze(this);
+class Precipitation extends WeatherData {
+  constructor(time, place, type, unit, value, precipitationType) {
+    super(time, place, type, unit, value);
+    this.precipitationType = precipitationType;
+    Object.freeze(this);
+  }
 
-  function getPrecipitationType() {
-    return state.precipitationType;
+  getPrecipitationType() {
+    return this.precipitationType;
   }
-  function convertToInches() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(PrecipitationUnitEnum.INCHES);
-      let newValue = weatherData.getValue() / 25.4;
-      weatherData.setValue(newValue);
+  convertToInches() {
+    if (this.type == TypesEnum.International) {
+      return new Precipitation(
+        this.time,
+        this.place,
+        TypesEnum.US,
+        PrecipitationUnitEnum.INCHES,
+        this.value / 25.4,
+        this.precipitationType
+      );
     }
   }
-  function convertToMM() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(PrecipitationUnitEnum.MM);
-      let newValue = weatherData.getValue() * 25.4;
-      weatherData.setValue(newValue);
+  convertToMM() {
+    if (this.type == TypesEnum.US) {
+      return new Precipitation(
+        this.getTime(),
+        this.getPlace(),
+        TypesEnum.International,
+        PrecipitationUnitEnum.MM,
+        this.getValue() * 25.4,
+        this.getPrecipitationType()
+      );
     }
   }
-  return Object.assign(
-    { getPrecipitationType, convertToInches, convertToMM },
-    weatherData
-  );
 }
 
 export { Precipitation };

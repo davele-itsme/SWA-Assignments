@@ -1,35 +1,40 @@
 import { TypesEnum, WindUnitEnum } from "./../../common/Enums.mjs";
 import { WeatherData } from "./WeatherData.mjs";
 
-function Wind(time, place, type, unit, value, direction) {
-  const state = { direction };
-  let weatherData = WeatherData(time, place, type, unit, value);
-
-  function getDirection() {
-    return state.direction;
+class Wind extends WeatherData {
+  constructor(time, place, type, unit, value, direction) {
+    super(time, place, type, unit, value);
+    this.direction = direction;
+    Object.freeze(this);
   }
-  function convertToMPH() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(WindUnitEnum.MPH);
-      let newValue = weatherData.getValue() * 2.237;
-      weatherData.setValue(newValue);
+
+  getDirection() {
+    this.direction;
+  }
+  convertToMPH() {
+    if (this.type == TypesEnum.International) {
+      return new Wind(
+        this.time,
+        this.place,
+        TypesEnum.US,
+        WindUnitEnum.MPH,
+        this.value * 2.237,
+        this.direction
+      );
     }
   }
-
-  function convertToMS() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(WindUnitEnum.MS);
-      let newValue = weatherData.getValue() / 2.237;
-      weatherData.setValue(newValue);
+  convertToMS() {
+    if (this.type == TypesEnum.US) {
+      return new Wind(
+        this.time,
+        this.place,
+        TypesEnum.International,
+        WindUnitEnum.MS,
+        this.value / 2.237,
+        this.direction
+      );
     }
   }
-
-  return Object.assign(
-    { getDirection, convertToMPH, convertToMS },
-    weatherData
-  );
 }
 
 export { Wind };

@@ -8,11 +8,11 @@ import { Temperature } from "./history/weatherdata/Temperature.mjs";
 import { Precipitation } from "./history/weatherdata/Precipitation.mjs";
 import { Wind } from "./history/weatherdata/Wind.mjs";
 import { WeatherHistory } from "./history/WeatherHistory.mjs";
-import { DataType } from "./common/DataType.mjs";
+import { EventData } from "./common/EventData.mjs";
 
 //TESTING
 
-var temperature = Temperature(
+var temperature = new Temperature(
   new Date(2015, 6, 5),
   "Prague",
   TypesEnum.US,
@@ -27,7 +27,7 @@ console.log(temperature.getValue() + " " + temperature.getUnit());
 
 console.log("-------------------------");
 
-var precipitation = Precipitation(
+var precipitation = new Precipitation(
   new Date(2016, 5, 5),
   "London",
   TypesEnum.US,
@@ -43,7 +43,7 @@ console.log(precipitation.getValue() + " " + precipitation.getUnit());
 
 console.log("-------------------------");
 
-var wind = Wind(
+var wind = new Wind(
   new Date(2019, 5, 5),
   "Copenhagen",
   TypesEnum.US,
@@ -61,8 +61,8 @@ console.log("-------------------------");
 
 const weathers = [temperature, precipitation, wind];
 const weathers2 = [temperature];
-const weatherHistory = WeatherHistory(weathers);
-const weatherHistory2 = WeatherHistory(weathers2);
+const weatherHistory = new WeatherHistory(weathers);
+const weatherHistory2 = new WeatherHistory(weathers2);
 console.log(weatherHistory.including(weathers2).length == 4);
 const lol = weatherHistory.forPlace("Copenhagen");
 console.log(lol.getData().length == 1);
@@ -74,12 +74,10 @@ console.log("-------------------------");
 
 //Immutability
 
-const datatype = DataType(1, 2);
-console.log(datatype.getType());
-datatype.setType(2);
-console.log(datatype.twe);
-datatype.twe = 5;
-console.log(datatype.twe);
+const eventData = new EventData(1, 2, 3, 4);
+console.log(eventData.getType());
+console.log(eventData.twe);
+console.log(eventData.twe);
 
 // TODO: Make everything immutable
 // TODO: Use of reduce method

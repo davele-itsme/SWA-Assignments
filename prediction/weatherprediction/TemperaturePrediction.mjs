@@ -1,26 +1,33 @@
 import { TypesEnum, TemperatureUnitEnum } from "./../../common/Enums.mjs";
 import { WeatherPrediction } from "./WeatherPrediction.mjs";
 
-function TemperaturePrediction(time, place, type, unit, max, min) {
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
-
-  function convertToF() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(TemperatureUnitEnum.F);
-      let newValue = weatherPrediction.getValue() * (9 / 5) + 32;
-      weatherPrediction.setValue(newValue);
+class TemperaturePrediction extends WeatherPrediction {
+  constructor(time, place, type, unit, value) {
+    super(time, place, type, unit, value);
+    Object.freeze(this);
+  }
+  convertToF() {
+    if (this.type == TypesEnum.International) {
+      return new Temperature(
+        this.time,
+        this.place,
+        TypesEnum.US,
+        TemperatureUnitEnum.F,
+        this.value * (9 / 5) + 32
+      );
     }
   }
-  function convertToC() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(TemperatureUnitEnum.C);
-      let newValue = (weatherPrediction.getValue() - 32) * (5 / 9);
-      weatherPrediction.setValue(newValue);
+  convertToC() {
+    if (this.type == TypesEnum.US) {
+      return new Temperature(
+        this.time,
+        this.place,
+        TypesEnum.International,
+        TemperatureUnitEnum.C,
+        (this.value - 32) * (5 / 9)
+      );
     }
   }
-  return Object.assign({ convertToF, convertToC }, weatherPrediction);
 }
 
 export { TemperaturePrediction };

@@ -1,42 +1,41 @@
 import { TypesEnum, PrecipitationUnitEnum } from "./../../common/Enums.mjs";
 import { WeatherPrediction } from "./WeatherPrediction.mjs";
 
-function PrecipitationPrediction(
-  time,
-  place,
-  type,
-  unit,
-  max,
-  min,
-  expectedTypes
-) {
-  const state = { expectedTypes };
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
+class PrecipitationPrediction extends WeatherPrediction {
+  constructor(time, place, type, unit, expectedTypes) {
+    super(time, place, type, unit);
+    this.expectedTypes = expectedTypes;
+    Object.freeze(this);
+  }
 
-  function getExpectedTypes() {
-    state.expectedTypes;
+  getExpectedTypes() {
+    [...this.expectedTypes];
   }
-  function matches(data) {}
-  function convertToInches() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(PrecipitationUnitEnum.INCHES);
-      let newValue = weatherPrediction.getValue() / 25.4;
-      weatherPrediction.setValue(newValue);
+  matches(data) {}
+  convertToInches() {
+    if (this.type == TypesEnum.International) {
+      return new Precipitation(
+        this.time,
+        this.place,
+        TypesEnum.US,
+        PrecipitationUnitEnum.INCHES,
+        this.value / 25.4,
+        this.precipitationType
+      );
     }
   }
-  function convertToMM() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(PrecipitationUnitEnum.MM);
-      let newValue = weatherPrediction.getValue() * 25.4;
-      weatherPrediction.setValue(newValue);
+  convertToMM() {
+    if (this.type == TypesEnum.US) {
+      return new Precipitation(
+        this.getTime(),
+        this.getPlace(),
+        TypesEnum.International,
+        PrecipitationUnitEnum.MM,
+        this.getValue() * 25.4,
+        this.getPrecipitationType()
+      );
     }
   }
-  return Object.assign(
-    { getExpectedTypes, matches, convertToInches, convertToMM },
-    weatherPrediction
-  );
 }
 
 export { PrecipitationPrediction };

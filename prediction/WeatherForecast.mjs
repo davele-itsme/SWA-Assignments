@@ -1,90 +1,82 @@
-import { TemperaturePrediction } from "./weatherprediction/TemperaturePrediction.mjs";
-import { PrecipitationPrediction } from "./weatherprediction/PrecipitationPrediction.mjs";
-import { WindPrediction } from "./weatherprediction/WindPrediction.mjs";
-import { DateInterval } from "./../common/DateInterval.mjs";
+class WeatherForecast {
+  constructor(data) {
+    this.data = data;
+    Object.freeze(this);
+  }
 
-// TODO: Make it as WeatherHistory/Diagram assignment
-function WeatherForecast(data) {
-  const state = { data };
-  const methods = {};
-
-  methods.getPlaceFilter = () => state.placeFilter;
-
-  methods.setPlaceFilter = (filter) => {
-    state.placeFilter = filter;
-  };
-
-  methods.clearPlaceFilter = () => {
-    state.placeFilter = "";
-  };
-
-  methods.getTypeFilter = () => state.typeFilter;
-
-  methods.setTypeFilter = (type) => {
-    state.typeFilter = type;
-  };
-
-  methods.clearTypeFilter = () => {
-    state.typeFilter = "";
-  };
-
-  methods.getPeriodFilter = () => state.periodFilter;
-
-  methods.setPeriodFilter = (period) => {
-    state.periodFilter = period;
-  };
-
-  methods.clearPeriodFilter = () => {
-    let from = new Date(2000, 1, 1);
-    let to = Date.now();
-    let dateInterval = DateInterval(from, to);
-    state.periodFilter = dateInterval;
-  };
-
-  methods.convertToUSUnits = () => {
-    state.data.forEach((weatherPrediction) => {
-      switch (true) {
-        case weatherPrediction instanceof TemperaturePrediction:
-          weatherPrediction.convertToF();
-        case weatherPrediction instanceof PrecipitationPrediction:
-          weatherPrediction.convertToInches();
-        case weatherPrediction instanceof WindPrediction:
-          weatherPrediction.convertToMPH();
-        default:
-          console.log("Error happened");
-      }
-    });
-  };
-
-  methods.convertToInternationalUnits = () => {
-    state.data.forEach((weatherPrediction) => {
-      switch (true) {
-        case weatherPrediction instanceof TemperaturePrediction:
-          weatherPrediction.convertToC();
-        case weatherPrediction instanceof PrecipitationPrediction:
-          weatherPrediction.convertToMM();
-        case weatherPrediction instanceof WindPrediction:
-          weatherPrediction.convertToMS();
-        default:
-          console.log("Error happened");
-      }
-    });
-  };
-
-  methods.add = (data) => {
-    state.data = state.data.concat(data);
-  };
-
-  methods.getFilteredPredictions = () => {
-    return state.data.filter(
-      (x) =>
-        x.getPlace() == state.placeFilter &&
-        x.getType() == state.typeFilter &&
-        state.periodFilter.contains(x.getTime())
+  forPlace(place) {
+    return new WeatherForecast(
+      this.data.filter((weatherData) => weatherData.getPlace() == place)
     );
-  };
+  }
 
-  return methods;
+  forType(type) {
+    return new WeatherForecast(
+      this.data.filter((weatherData) => weatherData.getType() == type)
+    );
+  }
+
+  forPeriod(period) {
+    return new WeatherForecast(
+      this.data.filter((weatherData) => period.contains(weatherData.getTime()))
+    );
+  }
+
+  including(data) {
+    return new WeatherForecast([...this.data, ...data]);
+  }
+
+  convertToUSUnits() {
+    const data = this.data.map((weatherData) => weatherData);
+    console.log(data);
+    for (const x of data) {
+      x.convertToF();
+    }
+    return new WeatherForecast(data);
+  }
+
+  convertToInternationalUnits() {
+    return new WeatherForecast(
+      this.data.map((weatherData) => {
+        weatherData.convertToC();
+        return weatherData;
+      })
+    );
+  }
+
+  getAverageMinValue() {
+    if (
+      new Set(this.data.map((x) => x.getType())).size !== 1 ||
+      this.data.size === 0
+    ) {
+      return undefined;
+    }
+    return (
+      this.data.reduce(
+        (acc, val) => (acc < val.getMin() ? acc : val.getMin()),
+        this.data[0].getMin()
+      ) / this.data.size
+    );
+  }
+
+  getAverageMaxValue() {
+    if (
+      new Set(this.data.map((x) => x.getType())).size !== 1 ||
+      this.data.size === 0
+    ) {
+      return undefined;
+    }
+    return (
+      this.data.reduce(
+        (acc, val) => (acc > val.getMax() ? acc : val.getMax()),
+        this.data[0].getMax()
+      ) / this.data.size
+    );
+  }
+
+  getPredictions() {
+    [...this.data];
+  }
 }
 
 export { WeatherForecast };

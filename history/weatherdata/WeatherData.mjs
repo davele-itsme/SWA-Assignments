@@ -1,17 +1,15 @@
-import { EventClass } from "./../../common/EventClass.mjs";
-import { DataType } from "./../../common/DataType.mjs";
+import { EventData } from "../../common/EventData.mjs";
 
-function WeatherData(time, place, type, unit, value) {
-  const state = { value };
-  let eventClass = EventClass(time, place);
-  let dataType = DataType(type, unit);
-  function getValue() {
-    return state.value;
+class WeatherData extends EventData {
+  constructor(time, place, type, unit, value) {
+    super(time, place, type, unit);
+    this.value = value;
+    Object.freeze(this);
   }
-  function setValue(value) {
-    state.value = value;
+
+  getValue() {
+    return this.value;
   }
-  return Object.assign({ getValue, setValue }, eventClass, dataType);
 }
 
 export { WeatherData };

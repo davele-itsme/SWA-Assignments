@@ -1,25 +1,34 @@
 import { TypesEnum, TemperatureUnitEnum } from "./../../common/Enums.mjs";
 import { WeatherData } from "./WeatherData.mjs";
 
-function Temperature(time, place, type, unit, value) {
-  let weatherData = WeatherData(time, place, type, unit, value);
-  function convertToF() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(TemperatureUnitEnum.F);
-      let newValue = weatherData.getValue() * (9 / 5) + 32;
-      weatherData.setValue(newValue);
+class Temperature extends WeatherData {
+  constructor(time, place, type, unit, value) {
+    super(time, place, type, unit, value);
+    Object.freeze(this);
+  }
+
+  convertToF() {
+    if (this.type == TypesEnum.International) {
+      return new Temperature(
+        this.time,
+        this.place,
+        TypesEnum.US,
+        TemperatureUnitEnum.F,
+        this.value * (9 / 5) + 32
+      );
     }
   }
-  function convertToC() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(TemperatureUnitEnum.C);
-      let newValue = (weatherData.getValue() - 32) * (5 / 9);
-      weatherData.setValue(newValue);
+  convertToC() {
+    if (this.type == TypesEnum.US) {
+      return new Temperature(
+        this.time,
+        this.place,
+        TypesEnum.International,
+        TemperatureUnitEnum.C,
+        (this.value - 32) * (5 / 9)
+      );
     }
   }
-  return Object.assign({ convertToF, convertToC }, weatherData);
 }
 
 export { Temperature };

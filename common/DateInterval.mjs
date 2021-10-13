@@ -1,19 +1,19 @@
-function DateInterval(from, to) {
-  const state = { from, to };
-  Object.freeze(this);
-
-  function getFrom() {
-    return state.from;
-  }
-  function getTo() {
-    state.to;
-  }
-  function contains(d) {
-    return d >= state.from && d <= state.to;
+class DateInterval {
+  constructor(from, to) {
+    this.from = from;
+    this.to = to;
+    Object.freeze(this);
   }
 
-  return { getFrom, getTo, contains };
+  getFrom() {
+    return this.from;
+  }
+  getTo() {
+    return this.to;
+  }
+  contains(d) {
+    return d >= this.from && d <= this.to;
+  }
 }
-Object.freeze(DateInterval);
 
 export { DateInterval };
