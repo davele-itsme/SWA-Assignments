@@ -4,7 +4,9 @@ import { WeatherData } from "./WeatherData.mjs";
 class Temperature extends WeatherData {
   constructor(time, place, type, unit, value) {
     super(time, place, type, unit, value);
-    Object.freeze(this);
+    if (this.constructor === Temperature) {
+      Object.freeze(this);
+    }
   }
 
   convertToF() {

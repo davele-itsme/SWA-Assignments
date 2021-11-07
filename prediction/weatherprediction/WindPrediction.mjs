@@ -5,7 +5,9 @@ class WindPrediction extends WeatherPrediction {
   constructor(time, place, type, unit, value, expectedDirections) {
     super(time, place, type, unit, value);
     this.expectedDirections = expectedDirections;
-    Object.freeze(this);
+    if (this.constructor === WindPrediction) {
+      Object.freeze(this);
+    }
   }
 
   getExpectedDirections() {

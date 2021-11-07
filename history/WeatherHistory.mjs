@@ -5,7 +5,9 @@ import { Wind } from "./weatherdata/Wind.mjs";
 class WeatherHistory {
   constructor(data) {
     this.data = data;
-    Object.freeze(this);
+    if (this.constructor === WeatherHistory) {
+      Object.freeze(this);
+    }
   }
 
   forPlace(place) {

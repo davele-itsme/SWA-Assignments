@@ -5,7 +5,9 @@ import { WindPrediction } from "./weatherprediction/WindPrediction.mjs";
 class WeatherForecast {
   constructor(data) {
     this.data = data;
-    Object.freeze(this);
+    if (this.constructor === WeatherForecast) {
+      Object.freeze(this);
+    }
   }
 
   forPlace(place) {

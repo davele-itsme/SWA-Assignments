@@ -4,7 +4,9 @@ import { WeatherPrediction } from "./WeatherPrediction.mjs";
 class TemperaturePrediction extends WeatherPrediction {
   constructor(time, place, type, unit, value) {
     super(time, place, type, unit, value);
-    Object.freeze(this);
+    if (this.constructor === TemperaturePrediction) {
+      Object.freeze(this);
+    }
   }
   convertToF() {
     if (this.type == TypesEnum.International) {

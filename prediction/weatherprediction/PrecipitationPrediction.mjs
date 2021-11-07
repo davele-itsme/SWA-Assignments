@@ -5,7 +5,9 @@ class PrecipitationPrediction extends WeatherPrediction {
   constructor(time, place, type, unit, expectedTypes) {
     super(time, place, type, unit);
     this.expectedTypes = expectedTypes;
-    Object.freeze(this);
+    if (this.constructor === PrecipitationPrediction) {
+      Object.freeze(this);
+    }
   }
 
   getExpectedTypes() {

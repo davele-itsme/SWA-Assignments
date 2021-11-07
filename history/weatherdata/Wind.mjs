@@ -5,7 +5,9 @@ class Wind extends WeatherData {
   constructor(time, place, type, unit, value, direction) {
     super(time, place, type, unit, value);
     this.direction = direction;
-    Object.freeze(this);
+    if (this.constructor === Wind) {
+      Object.freeze(this);
+    }
   }
 
   getDirection() {

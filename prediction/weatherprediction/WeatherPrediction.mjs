@@ -5,7 +5,9 @@ class WeatherPrediction extends EventData {
     super(time, place, type, unit);
     this.max = max;
     this.min = min;
-    Object.freeze(this);
+    if (this.constructor === WeatherPrediction) {
+      Object.freeze(this);
+    }
   }
 
   matches(data) {

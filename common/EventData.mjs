@@ -4,7 +4,9 @@ class EventData {
     this.place = place;
     this.type = type;
     this.unit = unit;
-    Object.freeze(this);
+    if (this.constructor === EventData) {
+      Object.freeze(this);
+    }
   }
 
   getTime() {

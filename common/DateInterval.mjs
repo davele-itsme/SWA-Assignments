@@ -2,7 +2,9 @@ class DateInterval {
   constructor(from, to) {
     this.from = from;
     this.to = to;
-    Object.freeze(this);
+    if (this.constructor === DateInterval) {
+      Object.freeze(this);
+    }
   }
 
   getFrom() {

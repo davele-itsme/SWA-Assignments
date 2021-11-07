@@ -5,7 +5,9 @@ class Precipitation extends WeatherData {
   constructor(time, place, type, unit, value, precipitationType) {
     super(time, place, type, unit, value);
     this.precipitationType = precipitationType;
-    Object.freeze(this);
+    if (this.constructor === Precipitation) {
+      Object.freeze(this);
+    }
   }
 
   getPrecipitationType() {

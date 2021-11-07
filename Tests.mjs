@@ -77,8 +77,5 @@ console.log("-------------------------");
 const eventData = new EventData(1, 2, 3, 4);
 console.log(eventData.getType());
 console.log(eventData.twe);
-console.log(eventData.twe);
-
-// TODO: Make everything immutable
-// TODO: Use of reduce method
-// TODO: Maybe create own higher order fucntion?
+eventData.time = "hello";
+console.log(eventData);

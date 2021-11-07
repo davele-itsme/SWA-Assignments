@@ -4,7 +4,9 @@ class WeatherData extends EventData {
   constructor(time, place, type, unit, value) {
     super(time, place, type, unit);
     this.value = value;
-    Object.freeze(this);
+    if (this.constructor === WeatherData) {
+      Object.freeze(this);
+    }
   }
 
   getValue() {
