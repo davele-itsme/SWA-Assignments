@@ -1,5 +1,4 @@
-function EventClass(time, place) {
-  //Renamed to EventClass so that it is not confused with Event
+function Event(time, place) {
   const state = { time, place };
 
   return {
@@ -12,4 +11,4 @@ function EventClass(time, place) {
   };
 }
 
-export { EventClass };
+export default Event;

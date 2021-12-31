@@ -1,5 +1,5 @@
-import { TypesEnum, WindUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherData } from "./WeatherData.mjs";
+import { WindUnitEnum } from "./../../common/Enums.mjs";
+import WeatherData from "./WeatherData.mjs";
 
 function Wind(time, place, type, unit, value, direction) {
   const state = { direction };
@@ -9,8 +9,7 @@ function Wind(time, place, type, unit, value, direction) {
     return state.direction;
   }
   function convertToMPH() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
+    if (weatherData.getUnit() === WindUnitEnum.MS) {
       weatherData.setUnit(WindUnitEnum.MPH);
       let newValue = weatherData.getValue() * 2.237;
       weatherData.setValue(newValue);
@@ -18,8 +17,7 @@ function Wind(time, place, type, unit, value, direction) {
   }
 
   function convertToMS() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
+    if (weatherData.getUnit() === WindUnitEnum.MPH) {
       weatherData.setUnit(WindUnitEnum.MS);
       let newValue = weatherData.getValue() / 2.237;
       weatherData.setValue(newValue);
@@ -32,4 +30,4 @@ function Wind(time, place, type, unit, value, direction) {
   );
 }
 
-export { Wind };
+export default Wind;

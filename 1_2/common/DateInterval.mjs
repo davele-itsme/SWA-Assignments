@@ -8,4 +8,4 @@ function DateInterval(from, to) {
   };
 }
 
-export { DateInterval };
+export default DateInterval;

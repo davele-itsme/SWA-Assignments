@@ -1,17 +1,17 @@
 function DateInterval(from, to) {
   const state = { from, to };
 
-  function getFrom() {
-    return state.from;
-  }
-  function getTo() {
-    state.to;
-  }
-  function contains(d) {
-    return d >= state.from && d <= state.to;
-  }
-
-  return { getFrom, getTo, contains };
+  return {
+    getFrom() {
+      return state.from;
+    },
+    getTo() {
+      return state.to;
+    },
+    contains(d) {
+      return d >= state.from && d <= state.to;
+    },
+  };
 }
 
-export { DateInterval };
+export default DateInterval;

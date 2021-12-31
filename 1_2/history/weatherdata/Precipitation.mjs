@@ -1,5 +1,5 @@
-import { TypesEnum, PrecipitationUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherData } from "./WeatherData.mjs";
+import { PrecipitationUnitEnum } from "./../../common/Enums.mjs";
+import WeatherData from "./WeatherData.mjs";
 
 function Precipitation(time, place, type, unit, value, precipitationType) {
   WeatherData.call(this, time, place, type, unit, value);
@@ -7,20 +7,19 @@ function Precipitation(time, place, type, unit, value, precipitationType) {
 
   this.getPrecipitationType = () => this.precipitationType;
   this.convertToInches = () => {
-    if (this.type == TypesEnum.International) {
-      this.type = TypesEnum.US;
+    if (this.unit === PrecipitationUnitEnum.MM) {
       this.unit = PrecipitationUnitEnum.INCHES;
       this.value = this.value / 25.4;
     }
   };
   this.convertToMM = () => {
-    if (this.type == TypesEnum.US) {
-      this.type = TypesEnum.International;
+    if (this.unit === PrecipitationUnitEnum.INCHES) {
       this.unit = PrecipitationUnitEnum.MM;
       this.value = this.value * 25.4;
     }
   };
 }
+
 Object.setPrototypeOf(Precipitation.prototype, WeatherData.prototype);
 
-export { Precipitation };
+export default Precipitation;

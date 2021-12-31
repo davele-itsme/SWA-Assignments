@@ -1,5 +1,5 @@
-import { TypesEnum, WindUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherData } from "./WeatherData.mjs";
+import { WindUnitEnum } from "./../../common/Enums.mjs";
+import WeatherData from "./WeatherData.mjs";
 
 function Wind(time, place, type, unit, value, direction) {
   WeatherData.call(this, time, place, type, unit, value);
@@ -7,15 +7,13 @@ function Wind(time, place, type, unit, value, direction) {
 
   this.getDirection = () => this.direction;
   this.convertToMPH = () => {
-    if (this.type == TypesEnum.International) {
-      this.type = TypesEnum.US;
+    if (this.unit == WindUnitEnum.MS) {
       this.unit = WindUnitEnum.MPH;
       this.value = this.value * 2.237;
     }
   };
   this.convertToMS = () => {
-    if (this.type == TypesEnum.US) {
-      this.type = TypesEnum.International;
+    if (this.unit == WindUnitEnum.MPH) {
       this.unit = WindUnitEnum.MS;
       this.value = this.value / 2.237;
     }
@@ -23,4 +21,4 @@ function Wind(time, place, type, unit, value, direction) {
 }
 Object.setPrototypeOf(Wind.prototype, WeatherData.prototype);
 
-export { Wind };
+export default Wind;

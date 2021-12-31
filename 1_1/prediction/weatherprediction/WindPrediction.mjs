@@ -1,5 +1,5 @@
-import { TypesEnum, WindUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherPrediction } from "./WeatherPrediction.mjs";
+import { WindUnitEnum } from "./../../common/Enums.mjs";
+import WeatherPrediction from "./WeatherPrediction.mjs";
 
 function WindPrediction(time, place, type, unit, max, min, expectedDirections) {
   const state = { expectedDirections };
@@ -8,20 +8,28 @@ function WindPrediction(time, place, type, unit, max, min, expectedDirections) {
   function getExpectedDirections() {
     state.expectedDirections;
   }
-  function matches(data) {}
+  function matches(data) {
+    return (
+      data.getTime() === weatherPrediction.getTime() &&
+      data.getPlace() === weatherPrediction.getPlace() &&
+      data.getType() === weatherPrediction.getType() &&
+      data.getUnit() === weatherPrediction.getUnit() &&
+      data.getValue() <= weatherPrediction.getMax() &&
+      data.getValue() >= weatherPrediction.getMin() &&
+      state.expectedDirections.includes(data.getDirection())
+    );
+  }
   function convertToMPH() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(WindUnitEnum.MPH);
+    if (weatherPrediction.getUnit() === WindUnitEnum.MS) {
+      weatherPrediction.setUnit(WindUnitEnum.MPH);
       let newValue = weatherPrediction.getValue() * 2.237;
       weatherPrediction.setValue(newValue);
     }
   }
 
   function convertToMS() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(WindUnitEnum.MS);
+    if (weatherPrediction.getUnit() === WindUnitEnum.MPH) {
+      weatherPrediction.setUnit(WindUnitEnum.MS);
       let newValue = weatherPrediction.getValue() / 2.237;
       weatherPrediction.setValue(newValue);
     }
@@ -33,4 +41,4 @@ function WindPrediction(time, place, type, unit, max, min, expectedDirections) {
   );
 }
 
-export { WindPrediction };
+export default WindPrediction;

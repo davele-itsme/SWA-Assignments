@@ -1,28 +1,29 @@
-import { EventClass } from "./../../common/EventClass.mjs";
-import { DataType } from "./../../common/DataType.mjs";
+import Event from "../../common/Event.mjs";
+import DataType from "./../../common/DataType.mjs";
 
 function WeatherPrediction(time, place, type, unit, max, min) {
   const state = { max, min };
-  let eventClass = EventClass(time, place);
+  let event = Event(time, place);
   let dataType = DataType(type, unit);
+
   function matches(data) {
     return (
-      data.time == eventClass.getTime() &&
-      data.place == eventClass.getPlace() &&
-      data.type == dataType.getType() &&
-      data.unit == dataType.getUnit() &&
-      data.value < state.max &&
-      data.value > state.min
+      data.getTime() === event.getTime() &&
+      data.getPlace() === event.getPlace() &&
+      data.getType() === dataType.getType() &&
+      data.getUnit() === dataType.getUnit() &&
+      data.getValue() <= state.max &&
+      data.getValue() >= state.min
     );
   }
   function getMax() {
-    state.max;
+    return state.max;
   }
   function getMin() {
-    state.min;
+    return state.min;
   }
 
-  return Object.assign({ matches, getMax, getMin }, eventClass, dataType);
+  return Object.assign({ matches, getMax, getMin }, event, dataType);
 }
 
-export { WeatherPrediction };
+export default WeatherPrediction;

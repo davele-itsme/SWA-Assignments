@@ -1,5 +1,5 @@
-import { TypesEnum, PrecipitationUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherPrediction } from "./WeatherPrediction.mjs";
+import { PrecipitationUnitEnum } from "./../../common/Enums.mjs";
+import WeatherPrediction from "./WeatherPrediction.mjs";
 
 function PrecipitationPrediction(
   time,
@@ -16,19 +16,27 @@ function PrecipitationPrediction(
   function getExpectedTypes() {
     state.expectedTypes;
   }
-  function matches(data) {}
+  function matches(data) {
+    return (
+      data.getTime() === weatherPrediction.getTime() &&
+      data.getPlace() === weatherPrediction.getPlace() &&
+      data.getType() === weatherPrediction.getType() &&
+      data.getUnit() === weatherPrediction.getUnit() &&
+      data.getValue() <= weatherPrediction.getMax() &&
+      data.getValue() >= weatherPrediction.getMin() &&
+      state.expectedTypes.includes(data.getPrecipitationType())
+    );
+  }
   function convertToInches() {
-    if (weatherData.getType() == TypesEnum.International) {
-      weatherData.setType(TypesEnum.US);
-      weatherData.setUnit(PrecipitationUnitEnum.INCHES);
+    if (weatherPrediction.getUnit() === PrecipitationUnitEnum.MM) {
+      weatherPrediction.setUnit(PrecipitationUnitEnum.INCHES);
       let newValue = weatherPrediction.getValue() / 25.4;
       weatherPrediction.setValue(newValue);
     }
   }
   function convertToMM() {
-    if (weatherData.getType() == TypesEnum.US) {
-      weatherData.setType(TypesEnum.International);
-      weatherData.setUnit(PrecipitationUnitEnum.MM);
+    if (weatherPrediction.getUnit() === PrecipitationUnitEnum.INCHES) {
+      weatherPrediction.setUnit(PrecipitationUnitEnum.MM);
       let newValue = weatherPrediction.getValue() * 25.4;
       weatherPrediction.setValue(newValue);
     }
@@ -39,4 +47,4 @@ function PrecipitationPrediction(
   );
 }
 
-export { PrecipitationPrediction };
+export default PrecipitationPrediction;

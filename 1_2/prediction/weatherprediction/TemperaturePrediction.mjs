@@ -1,18 +1,16 @@
-import { TypesEnum, TemperatureUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherPrediction } from "./WeatherPrediction.mjs";
+import { TemperatureUnitEnum } from "./../../common/Enums.mjs";
+import WeatherPrediction from "./WeatherPrediction.mjs";
 
 function TemperaturePrediction(time, place, type, unit, value) {
   WeatherPrediction.call(this, time, place, type, unit, value);
   this.convertToF = () => {
-    if (this.type == TypesEnum.International) {
-      this.type = TypesEnum.US;
+    if (this.unit === TemperatureUnitEnum.C) {
       this.unit = TemperatureUnitEnum.F;
       this.value = this.value * (9 / 5) + 32;
     }
   };
   this.convertToC = () => {
-    if (this.type == TypesEnum.US) {
-      this.type = TypesEnum.International;
+    if (this.unit === TemperatureUnitEnum.F) {
       this.unit = TemperatureUnitEnum.C;
       this.value = (this.value - 32) * (5 / 9);
     }
@@ -23,4 +21,4 @@ Object.setPrototypeOf(
   WeatherPrediction.prototype
 );
 
-export { TemperaturePrediction };
+export default TemperaturePrediction;

@@ -5,9 +5,6 @@ function DataType(type, unit) {
     getType() {
       return state.type;
     },
-    setType(type) {
-      state.type = type;
-    },
     getUnit() {
       return state.unit;
     },
@@ -17,4 +14,4 @@ function DataType(type, unit) {
   };
 }
 
-export { DataType };
+export default DataType;

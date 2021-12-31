@@ -6,4 +6,4 @@ function DataType(type, unit) {
   this.getUnit = () => this.unit;
 }
 
-export { DataType };
+export default DataType;

@@ -1,7 +1,5 @@
-import { Temperature } from "./weatherdata/Temperature.mjs";
-import { Precipitation } from "./weatherdata/Precipitation.mjs";
-import { Wind } from "./weatherdata/Wind.mjs";
-import { DateInterval } from "./../common/DateInterval.mjs";
+import DateInterval from "./../common/DateInterval.mjs";
+import { TypesEnum } from "../../1_1/common/Enums.mjs";
 
 function WeatherHistory(data) {
   this.data = data;
@@ -31,29 +29,29 @@ function WeatherHistory(data) {
   };
   this.convertToUSUnits = () => {
     this.data.forEach((weatherData) => {
-      switch (true) {
-        case weatherData instanceof Temperature:
+      switch (weatherData.type) {
+        case TypesEnum.TEMPERATURE:
           weatherData.convertToF();
-        case weatherData instanceof Precipitation:
+        case TypesEnum.PRECIPITATION:
           weatherData.convertToInches();
-        case weatherData instanceof Wind:
+        case TypesEnum.WIND:
           weatherData.convertToMPH();
         default:
-          console.log("Error happened");
+          console.log("Error when converting to US units.");
       }
     });
   };
   this.convertToInternationalUnits = () => {
     this.data.forEach((weatherData) => {
-      switch (true) {
-        case weatherData instanceof Temperature:
+      switch (weatherData.type) {
+        case TypesEnum.TEMPERATURE:
           weatherData.convertToC();
-        case weatherData instanceof Precipitation:
+        case TypesEnum.PRECIPITATION:
           weatherData.convertToMM();
-        case weatherData instanceof Wind:
+        case TypesEnum.WIND:
           weatherData.convertToMS();
         default:
-          console.log("Error happened");
+          console.log("Error when converting to International units.");
       }
     });
   };
@@ -63,11 +61,11 @@ function WeatherHistory(data) {
   this.getFilteredData = () => {
     return this.data.filter(
       (x) =>
-        x.place == this.placeFilter &&
-        x.type == this.typeFilter &&
-        this.periodFilter.contains(x.getTime())
+        x.place === this.placeFilter &&
+        x.type === this.typeFilter &&
+        this.periodFilter.contains(x.time)
     );
   };
 }
 
-export { WeatherHistory };
+export default WeatherHistory;

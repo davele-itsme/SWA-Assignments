@@ -31,29 +31,29 @@ function WeatherForecast(data) {
   };
   this.convertToUSUnits = () => {
     this.data.forEach((weatherPrediction) => {
-      switch (true) {
-        case weatherPrediction instanceof TemperaturePrediction:
+      switch (weatherPrediction.type) {
+        case TypesEnum.TEMPERATURE:
           weatherPrediction.convertToF();
-        case weatherPrediction instanceof PrecipitationPrediction:
+        case TypesEnum.PRECIPITATION:
           weatherPrediction.convertToInches();
-        case weatherPrediction instanceof WindPrediction:
+        case TypesEnum.WIND:
           weatherPrediction.convertToMPH();
         default:
-          console.log("Error happened");
+          console.log("Error when converting to US units.");
       }
     });
   };
   this.convertToInternationalUnits = () => {
     this.data.forEach((weatherPrediction) => {
-      switch (true) {
-        case weatherPrediction instanceof TemperaturePrediction:
+      switch (weatherPrediction.type) {
+        case TypesEnum.TEMPERATURE:
           weatherPrediction.convertToC();
-        case weatherPrediction instanceof PrecipitationPrediction:
+        case TypesEnum.PRECIPITATION:
           weatherPrediction.convertToMM();
-        case weatherPrediction instanceof WindPrediction:
+        case TypesEnum.WIND:
           weatherPrediction.convertToMS();
         default:
-          console.log("Error happened");
+          console.log("Error when converting to International units.");
       }
     });
   };
@@ -63,9 +63,9 @@ function WeatherForecast(data) {
   this.getFilteredPredictions = () => {
     return this.data.filter(
       (x) =>
-        x.place == this.placeFilter &&
-        x.type == this.typeFilter &&
-        this.periodFilter.contains(x.getTime())
+        x.place === this.placeFilter &&
+        x.type === this.typeFilter &&
+        this.periodFilter.contains(x)
     );
   };
 }
