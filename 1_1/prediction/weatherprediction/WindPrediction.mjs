@@ -1,9 +1,16 @@
-import { WindUnitEnum } from "./../../common/Enums.mjs";
+import { TypesEnum, WindUnitEnum } from "./../../common/Enums.mjs";
 import WeatherPrediction from "./WeatherPrediction.mjs";
 
-function WindPrediction(time, place, type, unit, max, min, expectedDirections) {
+function WindPrediction(time, place, unit, max, min, expectedDirections) {
   const state = { expectedDirections };
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
+  let weatherPrediction = WeatherPrediction(
+    time,
+    place,
+    TypesEnum.WIND,
+    unit,
+    max,
+    min
+  );
 
   function getExpectedDirections() {
     state.expectedDirections;

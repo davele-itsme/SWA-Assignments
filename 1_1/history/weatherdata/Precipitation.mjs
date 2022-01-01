@@ -1,9 +1,15 @@
-import { PrecipitationUnitEnum } from "./../../common/Enums.mjs";
+import { PrecipitationUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
 import WeatherData from "./WeatherData.mjs";
 
-function Precipitation(time, place, type, unit, value, precipitationType) {
+function Precipitation(time, place, unit, value, precipitationType) {
   const state = { precipitationType };
-  const weatherData = WeatherData(time, place, type, unit, value);
+  const weatherData = WeatherData(
+    time,
+    place,
+    TypesEnum.PRECIPITATION,
+    unit,
+    value
+  );
 
   function getPrecipitationType() {
     return state.precipitationType;

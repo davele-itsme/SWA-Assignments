@@ -1,8 +1,14 @@
-import { TemperatureUnitEnum } from "./../../common/Enums.mjs";
+import { TemperatureUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
 import WeatherData from "./WeatherData.mjs";
 
-function Temperature(time, place, type, unit, value) {
-  const weatherData = WeatherData(time, place, type, unit, value);
+function Temperature(time, place, unit, value) {
+  const weatherData = WeatherData(
+    time,
+    place,
+    TypesEnum.TEMPERATURE,
+    unit,
+    value
+  );
 
   function convertToF() {
     if (weatherData.getUnit() === TemperatureUnitEnum.C) {
@@ -18,7 +24,7 @@ function Temperature(time, place, type, unit, value) {
       weatherData.setValue(newValue);
     }
   }
-  
+
   return Object.assign({ convertToF, convertToC }, weatherData);
 }
 

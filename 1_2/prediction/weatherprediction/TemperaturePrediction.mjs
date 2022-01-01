@@ -1,8 +1,8 @@
-import { TemperatureUnitEnum } from "./../../common/Enums.mjs";
+import { TemperatureUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
 import WeatherPrediction from "./WeatherPrediction.mjs";
 
-function TemperaturePrediction(time, place, type, unit, value) {
-  WeatherPrediction.call(this, time, place, type, unit, value);
+function TemperaturePrediction(time, place, unit, value) {
+  WeatherPrediction.call(this, time, place, TypesEnum.TEMPERATURE, unit, value);
   this.convertToF = () => {
     if (this.unit === TemperatureUnitEnum.C) {
       this.unit = TemperatureUnitEnum.F;

@@ -1,8 +1,15 @@
-import { TemperatureUnitEnum } from "./../../common/Enums.mjs";
+import { TemperatureUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
 import WeatherPrediction from "./WeatherPrediction.mjs";
 
-function TemperaturePrediction(time, place, type, unit, max, min) {
-  let weatherPrediction = WeatherPrediction(time, place, type, unit, max, min);
+function TemperaturePrediction(time, place, unit, max, min) {
+  let weatherPrediction = WeatherPrediction(
+    time,
+    place,
+    TypesEnum.TEMPERATURE,
+    unit,
+    max,
+    min
+  );
 
   function convertToF() {
     if (weatherPrediction.getUnit() === TemperatureUnitEnum.C) {

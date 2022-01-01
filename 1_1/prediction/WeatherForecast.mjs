@@ -1,6 +1,3 @@
-import TemperaturePrediction from "./weatherprediction/TemperaturePrediction.mjs";
-import PrecipitationPrediction from "./weatherprediction/PrecipitationPrediction.mjs";
-import WindPrediction from "./weatherprediction/WindPrediction.mjs";
 import DateInterval from "./../common/DateInterval.mjs";
 import { TypesEnum } from "../common/Enums.mjs";
 

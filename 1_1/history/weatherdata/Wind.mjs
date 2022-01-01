@@ -1,9 +1,9 @@
-import { WindUnitEnum } from "./../../common/Enums.mjs";
+import { TypesEnum, WindUnitEnum } from "./../../common/Enums.mjs";
 import WeatherData from "./WeatherData.mjs";
 
-function Wind(time, place, type, unit, value, direction) {
+function Wind(time, place, unit, value, direction) {
   const state = { direction };
-  let weatherData = WeatherData(time, place, type, unit, value);
+  let weatherData = WeatherData(time, place, TypesEnum.WIND, unit, value);
 
   function getDirection() {
     return state.direction;

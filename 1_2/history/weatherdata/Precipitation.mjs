@@ -1,8 +1,8 @@
-import { PrecipitationUnitEnum } from "./../../common/Enums.mjs";
+import { PrecipitationUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
 import WeatherData from "./WeatherData.mjs";
 
-function Precipitation(time, place, type, unit, value, precipitationType) {
-  WeatherData.call(this, time, place, type, unit, value);
+function Precipitation(time, place, unit, value, precipitationType) {
+  WeatherData.call(this, time, place, TypesEnum.PRECIPITATION, unit, value);
   this.precipitationType = precipitationType;
 
   this.getPrecipitationType = () => this.precipitationType;

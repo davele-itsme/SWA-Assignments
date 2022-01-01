@@ -24,6 +24,7 @@ dataType.setUnit("CHANGED UNIT");
 console.log(dataType.getUnit() === "CHANGED UNIT");
 
 console.log(Object.getPrototypeOf(dataType));
+console.log(dataType.__proto__);
 
 console.log("-------------------------------------");
 
@@ -32,7 +33,6 @@ console.log("Temperature");
 let temperature = Temperature(
   new Date(2015, 6, 5),
   "Prague",
-  TypesEnum.TEMPERATURE,
   TemperatureUnitEnum.F,
   5
 );
@@ -49,6 +49,8 @@ console.log(temperature.getValue() === 5);
 console.log(temperature.getUnit() === TemperatureUnitEnum.F);
 
 console.log(Object.getPrototypeOf(temperature));
+console.log(temperature.__proto__);
+console.log(temperature.__proto__.__proto__);
 
 console.log("-------------------------");
 
@@ -57,7 +59,6 @@ console.log("Precipitation");
 let precipitation = Precipitation(
   new Date(2015, 6, 5),
   "Prague",
-  TypesEnum.PRECIPITATION,
   PrecipitationUnitEnum.MM,
   5,
   "rain"
@@ -78,14 +79,7 @@ console.log("-------------------------");
 
 console.log("Wind");
 
-let wind = Wind(
-  new Date(2019, 5, 5),
-  "Prague",
-  TypesEnum.US,
-  WindUnitEnum.MPH,
-  2,
-  "West"
-);
+let wind = Wind(new Date(2019, 5, 5), "Prague", WindUnitEnum.MPH, 2, "West");
 
 console.log(wind.getValue() === 2);
 console.log(wind.getUnit() === WindUnitEnum.MPH);
