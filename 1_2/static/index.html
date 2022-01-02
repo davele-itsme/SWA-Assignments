@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Prediction</title>
+    <script src="fetch.js"></script>
+  </head>
+  <style>
+    td {
+      width: 40px;
+      height: 40px;
+      border: 1px solid black;
+    }
+    table {
+      border: 1px solid black;
+      border-spacing: 0;
+    }
+  </style>
+  <body>
+    <h3>Latest Measurements:</h3>
+
+    <p id="last_temp">1. Temperature:</p>
+    <p id="last_rain">2. Precipitation:</p>
+    <p id="last_wind">3. Wind:</p>
+    <h3>Minimum temperature for the last 5 days</h3>
+    <p id="minTemp5days"></p>
+    <h3>Maximum temperature for the last 5 days</h3>
+    <p id="maxTemp5days"></p>
+    <h3>Total precipitation for the last 5 days:</h3>
+    <p id="totalPrecipitation"></p>
+    <h3>Average wind speed for the last 5 days:</h3>
+    <p id="avgWind"></p>
+    <h3>Hourly predictions for the next 24 hours in Copenhagen:</h3>
+    <h4>24 hours predictions for Wind</h4>
+    <p id="hourlyPrediction_wind"></p>
+    <h4>24 hours predictions for Rain</h4>
+    <p id="hourlyPrediction_rain"></p>
+    <h4>24 hours predictions for Temperature</h4>
+    <p id="hourlyPrediction_temperature"></p>
+  </body>
+</html>
