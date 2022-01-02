@@ -1,31 +1,27 @@
+function sendHttpRequest(method, url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.open(method, url);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("Accept", "application/json");
+  xhr.responseType = "json";
+  xhr.onload = () => callback(xhr.response);
+  xhr.send();
+}
+
 function weatherData() {
-  const weatherdata_request = new XMLHttpRequest();
-  weatherdata_request.open("GET", "http://localhost:8080/data");
-  weatherdata_request.setRequestHeader("Content-Type", "application/json");
-  weatherdata_request.setRequestHeader("Accept", "application/json");
-  weatherdata_request.onload = () => {
-    let response = weatherdata_request.responseText;
-    let weatherData = JSON.parse(response);
-    getLatestMeasurements(weatherdata);
-    MinTemp5days(weatherData);
-    MaxTemp5days(weatherData);
+  function callback(weatherData) {
+    getLatestMeasurements(weatherData);
+    minTemp5days(weatherData);
+    maxTemp5days(weatherData);
     totalPrecipitation5days(weatherData);
     avgWindSpeed5days(weatherData);
-  };
-  weatherdata_request.send();
+  }
+
+  sendHttpRequest("GET", "http://localhost:8080/data", callback);
 }
 
 function weatherPrediction() {
-  const prediction_request = new XMLHttpRequest();
-  prediction_request.open("GET", "http://localhost:8080/forecast");
-  prediction_request.setRequestHeader("Content-Type", "application/json");
-  prediction_request.setRequestHeader("Accept", "application/json");
-  prediction_request.onload = () => {
-    let response = prediction_request.responseText;
-    let forecastData = JSON.parse(response);
-    hourlyPrediction(forecastData);
-  };
-  prediction_request.send();
+  sendHttpRequest("GET", "http://localhost:8080/forecast", hourlyPrediction);
 }
 
 weatherData();
@@ -47,7 +43,7 @@ function getLatestMeasurements(weatherData) {
   );
 }
 
-function MinTemp5days(weatherData) {
+function minTemp5days(weatherData) {
   const result = last5days(weatherData).filter(
     (wd) => wd.type == "temperature"
   );
@@ -60,7 +56,7 @@ function MinTemp5days(weatherData) {
   document.getElementById("minTemp5days").innerHTML = minTemp;
 }
 
-function MaxTemp5days(weatherData) {
+function maxTemp5days(weatherData) {
   const result = last5days(weatherData).filter(
     (wd) => wd.type == "temperature"
   );
