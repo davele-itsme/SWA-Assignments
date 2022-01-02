@@ -1,6 +1,4 @@
-import { PrecipitationPrediction } from "./weatherprediction/PrecipitationPrediction.mjs";
-import { TemperaturePrediction } from "./weatherprediction/TemperaturePrediction.mjs";
-import { WindPrediction } from "./weatherprediction/WindPrediction.mjs";
+import { TypesEnum } from "../common/Enums.mjs";
 
 class WeatherForecast {
   constructor(data) {
@@ -35,12 +33,12 @@ class WeatherForecast {
   convertToInternationalUnits() {
     return new WeatherForecast(
       this.data.map((weatherData) => {
-        switch (true) {
-          case weatherData instanceof TemperaturePrediction:
+        switch (weatherData.getType()) {
+          case TypesEnum.TEMPERATURE:
             return weatherData.convertToC();
-          case weatherData instanceof PrecipitationPrediction:
+          case TypesEnum.PRECIPITATION:
             return weatherData.convertToMM();
-          case weatherData instanceof WindPrediction:
+          case TypesEnum.WIND:
             return weatherData.convertToMS();
         }
       })
@@ -50,12 +48,12 @@ class WeatherForecast {
   convertToUSUnits() {
     return new WeatherForecast(
       this.data.map((weatherData) => {
-        switch (true) {
-          case weatherData instanceof TemperaturePrediction:
+        switch (weatherData.getType()) {
+          case TypesEnum.TEMPERATURE:
             return weatherData.convertToF();
-          case weatherData instanceof PrecipitationPrediction:
+          case TypesEnum.PRECIPITATION:
             return weatherData.convertToInches();
-          case weatherData instanceof WindPrediction:
+          case TypesEnum.WIND:
             return weatherData.convertToMPH();
         }
       })
@@ -93,8 +91,8 @@ class WeatherForecast {
   }
 
   getPredictions() {
-    [...this.data];
+    return this.data;
   }
 }
 
-export { WeatherForecast };
+export default WeatherForecast;

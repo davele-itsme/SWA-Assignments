@@ -1,6 +1,4 @@
-import { Precipitation } from "./weatherdata/Precipitation.mjs";
-import { Temperature } from "./weatherdata/Temperature.mjs";
-import { Wind } from "./weatherdata/Wind.mjs";
+import { TypesEnum } from "../common/Enums.mjs";
 
 class WeatherHistory {
   constructor(data) {
@@ -12,13 +10,13 @@ class WeatherHistory {
 
   forPlace(place) {
     return new WeatherHistory(
-      this.data.filter((weatherData) => weatherData.getPlace() == place)
+      this.data.filter((weatherData) => weatherData.getPlace() === place)
     );
   }
 
   forType(type) {
     return new WeatherHistory(
-      this.data.filter((weatherData) => weatherData.getType() == type)
+      this.data.filter((weatherData) => weatherData.getType() === type)
     );
   }
 
@@ -31,12 +29,12 @@ class WeatherHistory {
   convertToInternationalUnits() {
     return new WeatherHistory(
       this.data.map((weatherData) => {
-        switch (true) {
-          case weatherData instanceof Temperature:
+        switch (weatherData.getType()) {
+          case TypesEnum.TEMPERATURE:
             return weatherData.convertToC();
-          case weatherData instanceof Precipitation:
+          case TypesEnum.PRECIPITATION:
             return weatherData.convertToMM();
-          case weatherData instanceof Wind:
+          case TypesEnum.WIND:
             return weatherData.convertToMS();
         }
       })
@@ -46,12 +44,12 @@ class WeatherHistory {
   convertToUSUnits() {
     return new WeatherHistory(
       this.data.map((weatherData) => {
-        switch (true) {
-          case weatherData instanceof Temperature:
+        switch (weatherData.getType()) {
+          case TypesEnum.TEMPERATURE:
             return weatherData.convertToF();
-          case weatherData instanceof Precipitation:
+          case TypesEnum.PRECIPITATION:
             return weatherData.convertToInches();
-          case weatherData instanceof Wind:
+          case TypesEnum.WIND:
             return weatherData.convertToMPH();
         }
       })
@@ -63,10 +61,7 @@ class WeatherHistory {
   }
 
   lowestValue() {
-    if (
-      new Set(this.data.map((x) => x.getType())).size !== 1 ||
-      this.data.size === 0
-    ) {
+    if (this.data.size === 0) {
       return undefined;
     }
     return this.data.reduce(
@@ -76,10 +71,7 @@ class WeatherHistory {
   }
 
   highestValue() {
-    if (
-      new Set(this.data.map((x) => x.getType())).size !== 1 ||
-      this.data.size === 0
-    ) {
+    if (this.data.size === 0) {
       return undefined;
     }
     return this.data.reduce(
@@ -89,8 +81,8 @@ class WeatherHistory {
   }
 
   getData() {
-    return [...this.data];
+    return this.data;
   }
 }
 
-export { WeatherHistory };
+export default WeatherHistory;

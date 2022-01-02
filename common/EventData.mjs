@@ -23,4 +23,4 @@ class EventData {
   }
 }
 
-export { EventData };
+export default EventData;

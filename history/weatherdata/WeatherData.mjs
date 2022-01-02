@@ -1,4 +1,4 @@
-import { EventData } from "../../common/EventData.mjs";
+import EventData from "../../common/EventData.mjs";
 
 class WeatherData extends EventData {
   constructor(time, place, type, unit, value) {
@@ -14,4 +14,4 @@ class WeatherData extends EventData {
   }
 }
 
-export { WeatherData };
+export default WeatherData;

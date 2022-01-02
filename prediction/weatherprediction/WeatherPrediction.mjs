@@ -1,4 +1,4 @@
-import { EventData } from "../../common/EventData.mjs";
+import EventData from "../../common/EventData.mjs";
 
 class WeatherPrediction extends EventData {
   constructor(time, place, type, unit, max, min) {
@@ -12,12 +12,12 @@ class WeatherPrediction extends EventData {
 
   matches(data) {
     return (
-      data.time == this.time &&
-      data.place == this.place &&
-      data.type == this.type &&
-      data.unit == this.unit &&
-      data.value < this.max &&
-      data.value > this.min
+      data.getTime() === this.time &&
+      data.getPlace() === this.place &&
+      data.getType() === this.type &&
+      data.getUnit() === this.unit &&
+      data.getValue() <= this.max &&
+      data.getValue() >= this.min
     );
   }
   getMax() {
@@ -28,4 +28,4 @@ class WeatherPrediction extends EventData {
   }
 }
 
-export { WeatherPrediction };
+export default WeatherPrediction;

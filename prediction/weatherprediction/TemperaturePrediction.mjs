@@ -1,35 +1,35 @@
-import { TypesEnum, TemperatureUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherPrediction } from "./WeatherPrediction.mjs";
+import { TemperatureUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
+import WeatherPrediction from "./WeatherPrediction.mjs";
 
 class TemperaturePrediction extends WeatherPrediction {
-  constructor(time, place, type, unit, value) {
-    super(time, place, type, unit, value);
+  constructor(time, place, unit, max, min) {
+    super(time, place, TypesEnum.TEMPERATURE, unit, max, min);
     if (this.constructor === TemperaturePrediction) {
       Object.freeze(this);
     }
   }
   convertToF() {
-    if (this.type == TypesEnum.International) {
+    if (this.unit === TemperatureUnitEnum.C) {
       return new Temperature(
         this.time,
         this.place,
-        TypesEnum.US,
         TemperatureUnitEnum.F,
-        this.value * (9 / 5) + 32
+        this.max * (9 / 5) + 32,
+        this.min * (9 / 5) + 32
       );
     }
   }
   convertToC() {
-    if (this.type == TypesEnum.US) {
+    if (this.unit === TemperatureUnitEnum.F) {
       return new Temperature(
         this.time,
         this.place,
-        TypesEnum.International,
         TemperatureUnitEnum.C,
-        (this.value - 32) * (5 / 9)
+        (this.max - 32) * (5 / 9),
+        (this.min - 32) * (5 / 9)
       );
     }
   }
 }
 
-export { TemperaturePrediction };
+export default TemperaturePrediction;

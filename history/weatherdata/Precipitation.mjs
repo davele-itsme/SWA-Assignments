@@ -1,9 +1,9 @@
-import { TypesEnum, PrecipitationUnitEnum } from "./../../common/Enums.mjs";
-import { WeatherData } from "./WeatherData.mjs";
+import { PrecipitationUnitEnum, TypesEnum } from "./../../common/Enums.mjs";
+import WeatherData from "./WeatherData.mjs";
 
 class Precipitation extends WeatherData {
-  constructor(time, place, type, unit, value, precipitationType) {
-    super(time, place, type, unit, value);
+  constructor(time, place, unit, value, precipitationType) {
+    super(time, place, TypesEnum.PRECIPITATION, unit, value);
     this.precipitationType = precipitationType;
     if (this.constructor === Precipitation) {
       Object.freeze(this);
@@ -14,11 +14,10 @@ class Precipitation extends WeatherData {
     return this.precipitationType;
   }
   convertToInches() {
-    if (this.type == TypesEnum.International) {
+    if (this.unit === PrecipitationUnitEnum.MM) {
       return new Precipitation(
         this.time,
         this.place,
-        TypesEnum.US,
         PrecipitationUnitEnum.INCHES,
         this.value / 25.4,
         this.precipitationType
@@ -26,17 +25,16 @@ class Precipitation extends WeatherData {
     }
   }
   convertToMM() {
-    if (this.type == TypesEnum.US) {
+    if (this.unit === PrecipitationUnitEnum.INCHES) {
       return new Precipitation(
-        this.getTime(),
-        this.getPlace(),
-        TypesEnum.International,
+        this.time,
+        this.place,
         PrecipitationUnitEnum.MM,
-        this.getValue() * 25.4,
-        this.getPrecipitationType()
+        this.value * 25.4,
+        this.precipitationType
       );
     }
   }
 }
 
-export { Precipitation };
+export default Precipitation;

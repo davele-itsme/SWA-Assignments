@@ -18,4 +18,4 @@ class DateInterval {
   }
 }
 
-export { DateInterval };
+export default DateInterval;

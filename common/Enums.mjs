@@ -1,5 +1,8 @@
-const TypesEnum = { INT: "International", US: "US" };
-Object.freeze(TypesEnum); //seal and freeze the object
+const TypesEnum = {
+  TEMPERATURE: "temperature",
+  PRECIPITATION: "precipitation",
+  WIND: "wind speed",
+};
 
 const TemperatureUnitEnum = { C: "Celsius", F: "Fahrenheit" };
 Object.freeze(TemperatureUnitEnum);
