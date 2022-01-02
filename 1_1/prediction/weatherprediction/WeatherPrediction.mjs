@@ -22,8 +22,18 @@ function WeatherPrediction(time, place, type, unit, max, min) {
   function getMin() {
     return state.min;
   }
+  function setMax(max) {
+    state.max = max;
+  }
+  function setMin(min) {
+    state.min = min;
+  }
 
-  return Object.assign({ matches, getMax, getMin }, event, dataType);
+  return Object.assign(
+    { matches, getMax, getMin, setMax, setMin },
+    event,
+    dataType
+  );
 }
 
 export default WeatherPrediction;

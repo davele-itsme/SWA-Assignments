@@ -29,16 +29,16 @@ function WindPrediction(time, place, unit, max, min, expectedDirections) {
   function convertToMPH() {
     if (weatherPrediction.getUnit() === WindUnitEnum.MS) {
       weatherPrediction.setUnit(WindUnitEnum.MPH);
-      let newValue = weatherPrediction.getValue() * 2.237;
-      weatherPrediction.setValue(newValue);
+      weatherPrediction.setMax(weatherPrediction.getMax() * 2.237);
+      weatherPrediction.setMin(weatherPrediction.getMin() * 2.237);
     }
   }
 
   function convertToMS() {
     if (weatherPrediction.getUnit() === WindUnitEnum.MPH) {
       weatherPrediction.setUnit(WindUnitEnum.MS);
-      let newValue = weatherPrediction.getValue() / 2.237;
-      weatherPrediction.setValue(newValue);
+      weatherPrediction.setMax(weatherPrediction.getMax() / 2.237);
+      weatherPrediction.setMin(weatherPrediction.getMin() / 2.237);
     }
   }
 

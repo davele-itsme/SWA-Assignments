@@ -14,15 +14,15 @@ function TemperaturePrediction(time, place, unit, max, min) {
   function convertToF() {
     if (weatherPrediction.getUnit() === TemperatureUnitEnum.C) {
       weatherPrediction.setUnit(TemperatureUnitEnum.F);
-      let newValue = weatherPrediction.getValue() * (9 / 5) + 32;
-      weatherPrediction.setValue(newValue);
+      weatherPrediction.setMax(weatherPrediction.getMax() * (9 / 5) + 32);
+      weatherPrediction.setMin(weatherPrediction.getMin() * (9 / 5) + 32);
     }
   }
   function convertToC() {
     if (weatherPrediction.getUnit() === TemperatureUnitEnum.F) {
       weatherPrediction.setUnit(TemperatureUnitEnum.C);
-      let newValue = (weatherPrediction.getValue() - 32) * (5 / 9);
-      weatherPrediction.setValue(newValue);
+      weatherPrediction.setMax((weatherPrediction.getMax() - 32) * (5 / 9));
+      weatherPrediction.setMin((weatherPrediction.getMin() - 32) * (5 / 9));
     }
   }
   return Object.assign({ convertToF, convertToC }, weatherPrediction);
