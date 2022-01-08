@@ -1,5 +1,5 @@
 {
-  "name": "swa3",
+  "name": "4_2",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "rxjs": "^7.4.0"
+    "rxjs": "^7.5.1"
   }
 }

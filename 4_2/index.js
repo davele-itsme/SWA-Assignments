@@ -1,61 +1,79 @@
-export let messages = [];
-export function Warnings() {
-  let initBol = true;
+import { Observable, from } from "https://dev.jspm.io/rxjs@6/_esm2015";
+import {
+  filter,
+  map,
+  pluck,
+} from "https://dev.jspm.io/rxjs@6/_esm2015/operators";
+import { messages } from "./Warnings.js";
 
-  const retrieveData = (message, sevBol) => {
-    let json;
-    if (sevBol != true) {
-      json = JSON.parse(message.data);
-    } else json = message;
+let ws;
+let warningsOn;
+let observable;
 
-    if (initBol) {
-      initData(json, sevBol);
-    } else {
-      let element = document.getElementById(`${json.id}`);
+const load = () => {
+  ws = new WebSocket("ws://localhost:8090/warnings");
 
-      if (element === null) {
-        addWarning(json, sevBol);
-      } else {
-        updateWarning(element, json, sevBol);
-      }
-    }
-  };
+  warningsOn = true;
 
-  const initData = (json, sevBol) => {
-    json.warnings.forEach((warning) => {
-      addWarning(warning, sevBol);
+  observable = Observable.create((observer) => {
+    ws.onmessage = (message) => {
+      observer.next(message.data);
+    };
+  })
+    .pipe(map((data) => JSON.parse(data)))
+    .pipe(pluck("warnings"))
+    .pipe(
+      map((data) => {
+        return data.filter((update) => update.prediction !== null);
+      })
+    );
+
+  ws.onopen = () => {
+    ws.send("subscribe");
+    observable.subscribe((msg) => {
+      console.log(msg);
     });
-    initBol = false;
   };
 
-  const addWarning = (text, sevBol) => {
-    if (sevBol != true) {
-      messages.push(text);
-    }
-    let severity = document.getElementById("fname").value;
-    console.log(text.severity + "sev" + severity);
-    if (text.severity >= severity) {
-      const li = document.createElement("li");
-      li.setAttribute("id", `${text.id}`);
-      li.innerText = JSON.stringify(text);
-      document.querySelector("#warnings").appendChild(li);
-    }
+  ws.onerror = (event) => {
+    console.log("WebSocket error: ", event);
   };
-  const updateWarning = (element, newData, sevBol) => {
-    if (sevBol != true) {
-      messages.push(newData);
-    }
-    let severity = document.getElementById("fname").value;
-    console.log(newData.severity + "sev" + severity);
-    if (newData.severity >= severity) {
-      const a = document.createElement("a");
-      a.innerText = JSON.stringify(newData);
-      element.appendChild(a);
-    }
-  };
+};
 
-  return {
-    retrieveData,
-    addWarning,
+load();
+
+document.getElementById("toggle").onclick = () => {
+  if (warningsOn === true) {
+    unSubscribe();
+    document.getElementById("warnings").style.display = "none";
+    messages = [];
+    warningsOn = false;
+  } else {
+    location.reload();
+    warningsOn = true;
+  }
+};
+
+const unSubscribe = () => {
+  ws.onopen = () => {
+    const message = "unsubscribe";
+    ws.send(message);
   };
-}
+};
+
+document.getElementById("changeSeverity").onclick = () => {
+  let severity = document.getElementById("sev").value;
+
+  let ul = document.getElementById("warnings");
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild);
+  }
+  const source = from(messages);
+
+  console.log(messages.length);
+  const modified = source.pipe(filter((v) => v.severity >= severity));
+
+  modified.subscribe((x) => {
+    warnings.retrieveData(x, true);
+  });
+};
