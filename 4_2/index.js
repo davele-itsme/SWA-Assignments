@@ -1,38 +1,46 @@
-import { Observable, from } from "https://dev.jspm.io/rxjs@6/_esm2015";
+import { Subject } from "https://dev.jspm.io/rxjs@6/_esm2015";
 import {
   filter,
   map,
+  flatMap,
   pluck,
+  take,
+  skip,
 } from "https://dev.jspm.io/rxjs@6/_esm2015/operators";
-import { messages } from "./Warnings.js";
+import {
+  addWarning,
+  resetWarnings,
+  updateWarning,
+  warnings,
+} from "./Warnings.js";
 
 let ws;
 let warningsOn;
-let observable;
+let initSubject;
+let frequentSubject;
 
-const load = () => {
+document.body.onload = () => {
   ws = new WebSocket("ws://localhost:8090/warnings");
 
-  warningsOn = true;
+  const subject = new Subject();
+  ws.onmessage = (message) => {
+    subject.next(message.data);
+  };
 
-  observable = Observable.create((observer) => {
-    ws.onmessage = (message) => {
-      observer.next(message.data);
-    };
-  })
+  initSubject = subject
+    .pipe(take(1))
     .pipe(map((data) => JSON.parse(data)))
     .pipe(pluck("warnings"))
-    .pipe(
-      map((data) => {
-        return data.filter((update) => update.prediction !== null);
-      })
-    );
+    .pipe(flatMap((data) => data))
+    .pipe(filter((data) => data.prediction !== null));
+
+  frequentSubject = subject
+    .pipe(skip(1))
+    .pipe(map((data) => JSON.parse(data)))
+    .pipe(filter((data) => data.prediction !== null));
 
   ws.onopen = () => {
-    ws.send("subscribe");
-    observable.subscribe((msg) => {
-      console.log(msg);
-    });
+    subscribe();
   };
 
   ws.onerror = (event) => {
@@ -40,40 +48,50 @@ const load = () => {
   };
 };
 
-load();
+const subscribe = () => {
+  ws.send("subscribe");
+  warningsOn = true;
 
-document.getElementById("toggle").onclick = () => {
-  if (warningsOn === true) {
-    unSubscribe();
-    document.getElementById("warnings").style.display = "none";
-    messages = [];
-    warningsOn = false;
-  } else {
-    location.reload();
-    warningsOn = true;
-  }
+  initSubject.subscribe((data) => {
+    console.log(data);
+    addWarning(data);
+  });
+
+  frequentSubject.subscribe((data) => {
+    console.log(data);
+    updateWarning(data);
+  });
+
+  document.getElementById("toggle").innerText = "turn off";
 };
 
-const unSubscribe = () => {
-  ws.onopen = () => {
-    const message = "unsubscribe";
-    ws.send(message);
-  };
+const unsubscribe = () => {
+  ws.send("unsubscribe");
+  frequentSubject.unsubscribe();
+  document.getElementById("toggle").innerText = "turn on";
+  resetWarnings();
+  warningsOn = false;
+};
+
+document.getElementById("toggle").onclick = () => {
+  if (warningsOn) {
+    unsubscribe();
+  } else {
+    subscribe();
+  }
 };
 
 document.getElementById("changeSeverity").onclick = () => {
   let severity = document.getElementById("sev").value;
 
-  let ul = document.getElementById("warnings");
-  while (ul.firstChild) {
-    ul.removeChild(ul.firstChild);
+  let filteredWarnings = warnings.filter(
+    (warning) => warning.severity >= severity
+  );
+
+  if (severity) {
+    document.getElementById("warnings").innerHTML = "";
+    filteredWarnings.forEach((warning) => {
+      addWarning(warning);
+    });
   }
-  const source = from(messages);
-
-  console.log(messages.length);
-  const modified = source.pipe(filter((v) => v.severity >= severity));
-
-  modified.subscribe((x) => {
-    warnings.retrieveData(x, true);
-  });
 };

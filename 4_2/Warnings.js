@@ -1,64 +1,48 @@
-export let messages = [];
+export let warnings = [];
 
-export function Warnings() {
-  let initBol = true;
+export const addWarning = (warning) => {
+  warnings.push(warning);
 
-  const retrieveData = (message) => {
-    let data = JSON.parse(message.data);
+  let severity = document.getElementById("sev").value;
 
-    console.log("HEYY");
+  if (warning.severity >= severity) {
+    const li = document.createElement("li");
+    li.setAttribute("id", `${warning.id}`);
+    li.innerText =
+      `Severity: ${warning.severity} ` + JSON.stringify(warning.prediction);
+    document.querySelector("#warnings").appendChild(li);
+  }
+};
 
-    if (initBol) {
-      initData(data);
+export const updateWarning = (warning) => {
+  let exists = false;
+  warnings.forEach((element, index) => {
+    if (element.id === warning.id) {
+      exists = true;
+      warnings[index] = warning;
+      replaceDocument(warning);
+    }
+  });
+
+  if (!exists) {
+    addWarning(warning);
+  }
+};
+
+export const resetWarnings = () => {
+  warnings = [];
+};
+
+const replaceDocument = (warning) => {
+  let severity = document.getElementById("sev").value;
+  if (warning.severity >= severity) {
+    if (document.getElementById(warning.id)) {
+      //If <li> exists, it should be replaced with new information
+      document.getElementById(warning.id).innerText =
+        `Severity: ${warning.severity} ` + JSON.stringify(warning.prediction);
     } else {
-      let element = document.getElementById(`${data.id}`);
-
-      if (element === null) {
-        addWarning(data);
-      } else {
-        updateWarning(element, data);
-      }
-    }
-    console.log("HYE");
-  };
-
-  const initData = (data) => {
-    console.log("YOOooo");
-    console.log(data);
-    data.warnings.forEach((warning) => {
+      //Create a new <li> warning
       addWarning(warning);
-    });
-    initBol = false;
-  };
-
-  const addWarning = (text) => {
-    console.log(text);
-    messages.push(text);
-
-    let severity = document.getElementById("fname");
-
-    if (text.severity >= severity) {
-      const li = document.createElement("li");
-      li.setAttribute("id", `${text.id}`);
-      li.innerText = JSON.stringify(text);
-      document.querySelector("#warnings").appendChild(li);
     }
-  };
-
-  const updateWarning = (element, newData) => {
-    messages.push(newData);
-
-    let severity = document.getElementById("fname").value;
-    console.log(newData.severity + "sev" + severity);
-    if (newData.severity >= severity) {
-      const a = document.createElement("a");
-      a.innerText = JSON.stringify(newData);
-      element.appendChild(a);
-    }
-  };
-
-  return {
-    retrieveData,
-    addWarning,
-  };
-}
+  }
+};
