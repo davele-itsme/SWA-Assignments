@@ -1,16 +1,26 @@
 export let warnings = [];
 
-export const addWarning = (warning) => {
-  warnings.push(warning);
+export const addWarning = (warning, htmlOnly = false) => {
+  if (!htmlOnly) {
+    warnings.push(warning);
+  }
 
   let severity = document.getElementById("sev").value;
 
   if (warning.severity >= severity) {
-    const li = document.createElement("li");
-    li.setAttribute("id", `${warning.id}`);
-    li.innerText =
-      `Severity: ${warning.severity} ` + JSON.stringify(warning.prediction);
-    document.querySelector("#warnings").appendChild(li);
+    const tr = document.createElement("tr");
+    tr.setAttribute("id", warning.id);
+    tr.innerHTML = `
+    <tr>
+       <td>${warning.severity}</td>
+       <td>${warning.prediction.type}</td>
+       <td>${warning.prediction.place}</td>
+       <td>${warning.prediction.from}</td>
+       <td>${warning.prediction.to}</td>
+       <td>${warning.prediction.unit}</td>
+    </tr>
+    `;
+    document.querySelector("#body").appendChild(tr);
   }
 };
 
@@ -37,11 +47,17 @@ const replaceDocument = (warning) => {
   let severity = document.getElementById("sev").value;
   if (warning.severity >= severity) {
     if (document.getElementById(warning.id)) {
-      //If <li> exists, it should be replaced with new information
-      document.getElementById(warning.id).innerText =
-        `Severity: ${warning.severity} ` + JSON.stringify(warning.prediction);
+      //If <tr> with the id exists, it should be replaced with new information
+      document.getElementById(warning.id).innerHTML = `
+         <td>${warning.severity}</td>
+         <td>${warning.prediction.type}</td>
+         <td>${warning.prediction.place}</td>
+         <td>${warning.prediction.from}</td>
+         <td>${warning.prediction.to}</td>
+         <td>${warning.prediction.unit}</td>
+      `;
     } else {
-      //Create a new <li> warning
+      //Create a new <tr> warning
       addWarning(warning);
     }
   }

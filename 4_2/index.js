@@ -89,9 +89,10 @@ document.getElementById("changeSeverity").onclick = () => {
   );
 
   if (severity) {
-    document.getElementById("warnings").innerHTML = "";
+    document.getElementById("body").innerHTML = "";
+
     filteredWarnings.forEach((warning) => {
-      addWarning(warning);
+      addWarning(warning, true);
     });
   }
 };
