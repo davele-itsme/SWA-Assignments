@@ -34,6 +34,17 @@ export const WeatherDataContainer = () => {
   const from = useSelector(getFrom);
   const to = useSelector(getTo);
 
+  // const [from, setFrom] = useState(dateStore.getFrom());
+
+  // useEffect(() => {
+  //   dateStore.addChangeListener(onChange);
+  //   return () => dateStore.removeChangeListener(onChange);
+  // }, []);
+
+  // function onChange() {
+  //   setFrom(dateStore.getFrom());
+  // }
+
   return (
     <div className="container">
       <div className="filters">

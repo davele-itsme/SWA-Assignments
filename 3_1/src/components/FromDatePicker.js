@@ -13,6 +13,10 @@ export default function FromDatePicker({ from }) {
     dispatch(updateFrom(value.toString()));
   };
 
+  // const setDateValue = (value) => {
+  //   DateStoreActions.updateFrom(value.toString());
+  // };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateTimePicker
